@@ -1,10 +1,43 @@
 from pyrogram import Client, filters, enums
 from pyrogram.types import ChatJoinRequest
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL
+from info import ADMINS, SYD_URI, SYD_NAME #, AUTH_CHANNEL
 
 from pyrogram import Client, filters
 from pyrogram.types import ChatJoinRequest
+
+from motor.motor_asyncio import AsyncIOMotorClient
+
+
+class Database:
+    def __init__(self, uri: str, db_name: str):
+        self.client = AsyncIOMotorClient(uri)
+        self.db = self.client[db_name]
+        self.col = self.db.force_channels
+
+
+    async def set_group_channel(self, group_id: int, channel_id: int):
+        await self.col.update_one(
+            {"group_id": group_id},
+            {"$set": {"channel_id": channel_id, "users": []}},
+            upsert=True
+        )
+
+    async def add_user(self, group_id: int, user_id: int):
+        await self.col.update_one(
+            {"group_id": group_id},
+            {"$addToSet": {"users": user_id}},
+            upsert=True
+        )
+
+    async def get_channel_id(self, group_id: int):
+        doc = await self.col.find_one({"group_id": group_id})
+        return doc.get("channel_id") if doc else None
+
+    async def get_users(self, group_id: int):
+        doc = await self.col.find_one({"group_id": group_id})
+        return doc.get("users", []) if doc else []
+
 
 @Client.on_chat_join_request()
 async def handle_join_request(client: Client, message: ChatJoinRequest):
@@ -135,3 +168,6 @@ async def join_reqs(client, message: ChatJoinRequest):
 async def del_requests(client, message):
     await db.del_join_req()    
     await message.reply("<b>⚙ ꜱᴜᴄᴄᴇꜱꜱғᴜʟʟʏ ᴄʜᴀɴɴᴇʟ ʟᴇғᴛ ᴜꜱᴇʀꜱ ᴅᴇʟᴇᴛᴇᴅ</b>")
+
+
+force_db = Database(SYD_URI, SYD_NAME)
