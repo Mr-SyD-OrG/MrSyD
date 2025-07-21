@@ -66,7 +66,7 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
 from pyrogram.errors import UserNotParticipant
 from pyrogram import enums
 
-async def is_req_subscribed(bot, query, group_id):
+async def is_rq_subscribed(bot, query, group_id):
     user_id = query.from_user.id
 
     # Step 1: Find channel linked to this group
