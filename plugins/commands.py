@@ -88,45 +88,6 @@ async def start(client, message):
         )
         return
         
-    if AUTH_CHANNEL:
-        try:
-            # Fetch subscription statuses once
-            is_req_sub = await is_req_subscribed(client, message)
-            is_sub = await is_subscribed(client, message)
-
-            if not (is_req_sub and is_sub):
-                try:
-                    invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL), creates_join_request=True)
-                except ChatAdminRequired:
-                    logger.error("Make sure Bot is admin in Forcesub channel")
-                    return
-                
-                btn = []
-
-                # Only add buttons if the user is not subscribed
-                if not is_req_sub:
-                    btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ¹⊛", url=invite_link.invite_link)])
-
-                if not is_sub:
-                    btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url="https://t.me/Bot_Cracker")])
-
-                if len(message.command) > 1 and message.command[1] != "subscribe":
-                    try:
-                        kk, file_id = message.command[1].split("_", 1)
-                        btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", callback_data=f"checksub#{kk}#{file_id}")])
-                    except (IndexError, ValueError):
-                        btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
-
-                await client.send_message(
-                    chat_id=message.from_user.id,
-                    text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
-                    reply_markup=InlineKeyboardMarkup(btn),
-                    parse_mode=enums.ParseMode.MARKDOWN
-                )
-                return
-        except Exception as e:
-            logger.error(f"Error in subscription check: {e}")
-            await client.send_message(chat_id=1733124290, text="FORCE  SUB  ERROR ......  CHECK LOGS")
 
         
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
@@ -173,7 +134,7 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return
-        
+    
     if len(message.command) == 2 and message.command[1] in ["premium"]:
         buttons = [[
                     InlineKeyboardButton('📲 ꜱᴇɴᴅ ᴘᴀʏᴍᴇɴᴛ ꜱᴄʀᴇᴇɴꜱʜᴏᴛ', user_id=int(7650672))
@@ -189,6 +150,125 @@ async def start(client, message):
         )
         return  
     data = message.command[1]
+    if data.startswith("msyd") or data.startswith("mrsyd"):
+        try:
+            pree = data[:4]  # 'file' or 'filep'
+            group_code = data[4:12]  # 8-digit group ID without -100
+            group_id = int("-100" + group_code)
+            file_iid = data.split("_", 1)[1]
+        except Exception:
+            return await message.reply("❌ ɪɴᴠᴀʟɪᴅ ꜱᴛᴀʀᴛ ᴘᴀʏʟᴏᴀᴅ.")
+
+        user_id = message.from_user.id
+        is_sub = await is_rq_subscribed(client, message, group_id)
+
+        if not is_sub:
+            try:
+                group_doc = await force_db.col.find_one({"group_id": group_id})
+                channel_id = group_doc.get("channel_id") if group_doc else None
+
+                if channel_id:
+                    invite = await client.create_chat_invite_link(
+                        chat_id=channel_id,
+                        creates_join_request=True,
+                        name=f"JoinLink_{user_id}"
+                    )
+                    invite_link = invite.invite_link
+                else:
+                    invite_link = "https://t.me/Bot_Cracker"
+            except Exception:
+                invite_link = "https://t.me/Bot_Cracker"
+
+            btn = [
+                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url=invite_link)],
+                [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={data}")]
+            ]
+
+            await client.send_message(
+                chat_id=user_id,
+                text="Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
+                reply_markup=InlineKeyboardMarkup(btn),
+                parse_mode=enums.ParseMode.MARKDOWN
+            )
+            return
+
+
+        files_ = await get_file_details(file_iid)
+        if not files_:
+            return await message.reply("❌ ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ !")
+
+        try:
+            msg = await client.send_cached_media(
+                chat_id=user_id,
+                file_id=file_iid,
+                protect_content=(pre == "mrsyd"),
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_id}")],
+                    [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
+                ])
+            )
+
+            filetype = msg.media
+            file = getattr(msg, filetype.value)
+            title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+            size = get_size(file.file_size)
+            f_caption = f"<code>{title}</code>"
+
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption = CUSTOM_FILE_CAPTION.format(
+                        file_name=title or '',
+                        file_size=size or '',
+                        file_caption=''
+                    )
+                except:
+                    pass
+
+            await msg.edit_caption(f_caption)
+
+        except Exception as e:
+            await message.reply(f"⚠️ ᴇʀʀᴏʀ ꜱᴇɴᴅɪɴɢ ꜰɪʟᴇ: {e}")
+        return
+    if AUTH_CHANNEL:
+        try:
+            # Fetch subscription statuses once
+            is_req_sub = await is_req_subscribed(client, message)
+            is_sub = await is_subscribed(client, message)
+
+            if not (is_req_sub and is_sub):
+                try:
+                    invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL), creates_join_request=True)
+                except ChatAdminRequired:
+                    logger.error("Make sure Bot is admin in Forcesub channel")
+                    return
+                
+                btn = []
+
+                # Only add buttons if the user is not subscribed
+                if not is_req_sub:
+                    btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ¹⊛", url=invite_link.invite_link)])
+
+                if not is_sub:
+                    btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url="https://t.me/Bot_Cracker")])
+
+                if len(message.command) > 1 and message.command[1] != "subscribe":
+                    try:
+                        kk, file_id = message.command[1].split("_", 1)
+                        btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", callback_data=f"checksub#{kk}#{file_id}")])
+                    except (IndexError, ValueError):
+                        btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
+
+                await client.send_message(
+                    chat_id=message.from_user.id,
+                    text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
+                    reply_markup=InlineKeyboardMarkup(btn),
+                    parse_mode=enums.ParseMode.MARKDOWN
+                )
+                return
+        except Exception as e:
+            logger.error(f"Error in subscription check: {e}")
+            await client.send_message(chat_id=1733124290, text="FORCE  SUB  ERROR ......  CHECK LOGS")
+
     if data.split("-", 1)[0] == "SyD":
         user_id = int(data.split("-", 1)[1])
         syd = await referal_add_user(user_id, message.from_user.id)
@@ -301,86 +381,6 @@ async def start(client, message):
                 continue
             await asyncio.sleep(1) 
         await sts.delete()
-        return
-
-    elif data.startswith("msyd") or data.startswith("mrsyd"):
-        try:
-            pree = data[:4]  # 'file' or 'filep'
-            group_code = data[4:12]  # 8-digit group ID without -100
-            group_id = int("-100" + group_code)
-            file_iid = data.split("_", 1)[1]
-        except Exception:
-            return await message.reply("❌ ɪɴᴠᴀʟɪᴅ ꜱᴛᴀʀᴛ ᴘᴀʏʟᴏᴀᴅ.")
-
-        user_id = message.from_user.id
-        is_sub = await is_rq_subscribed(client, message, group_id)
-
-        if not is_sub:
-            try:
-                group_doc = await force_db.col.find_one({"group_id": group_id})
-                channel_id = group_doc.get("channel_id") if group_doc else None
-
-                if channel_id:
-                    invite = await client.create_chat_invite_link(
-                        chat_id=channel_id,
-                        creates_join_request=True,
-                        name=f"JoinLink_{user_id}"
-                    )
-                    invite_link = invite.invite_link
-                else:
-                    invite_link = "https://t.me/Bot_Cracker"
-            except Exception:
-                invite_link = "https://t.me/Bot_Cracker"
-
-            btn = [
-                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url=invite_link)],
-                [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={data}")]
-            ]
-
-            await client.send_message(
-                chat_id=user_id,
-                text="Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
-                reply_markup=InlineKeyboardMarkup(btn),
-                parse_mode=enums.ParseMode.MARKDOWN
-            )
-            return
-
-
-        files_ = await get_file_details(file_iid)
-        if not files_:
-            return await message.reply("❌ ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ !")
-
-        try:
-            msg = await client.send_cached_media(
-                chat_id=user_id,
-                file_id=file_iid,
-                protect_content=(pre == "mrsyd"),
-                reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_id}")],
-                    [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
-                ])
-            )
-
-            filetype = msg.media
-            file = getattr(msg, filetype.value)
-            title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
-            size = get_size(file.file_size)
-            f_caption = f"<code>{title}</code>"
-
-            if CUSTOM_FILE_CAPTION:
-                try:
-                    f_caption = CUSTOM_FILE_CAPTION.format(
-                        file_name=title or '',
-                        file_size=size or '',
-                        file_caption=''
-                    )
-                except:
-                    pass
-
-            await msg.edit_caption(f_caption)
-
-        except Exception as e:
-            await message.reply(f"⚠️ ᴇʀʀᴏʀ ꜱᴇɴᴅɪɴɢ ꜰɪʟᴇ: {e}")
         return
         
     elif data.split("-", 1)[0] == "DSTORE":
