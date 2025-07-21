@@ -301,7 +301,87 @@ async def start(client, message):
             await asyncio.sleep(1) 
         await sts.delete()
         return
-    
+
+    elif data.startswith("msyd") or data.startswith("mrsyd"):
+        try:
+            pree = data[:4]  # 'file' or 'filep'
+            group_code = data[4:12]  # 8-digit group ID without -100
+            group_id = int("-100" + group_code)
+            file_iid = data.split("_", 1)[1]
+        except Exception:
+            return await message.reply("❌ ɪɴᴠᴀʟɪᴅ ꜱᴛᴀʀᴛ ᴘᴀʏʟᴏᴀᴅ.")
+
+        user_id = message.from_user.id
+        is_sub = await is_req_subscribed(client, message, group_id)
+
+        if not is_sub:
+            try:
+                group_doc = await force_db.col.find_one({"group_id": group_id})
+                channel_id = group_doc.get("channel_id") if group_doc else None
+
+                if channel_id:
+                    invite = await client.create_chat_invite_link(
+                        chat_id=channel_id,
+                        creates_join_request=True,
+                        name=f"JoinLink_{user_id}"
+                    )
+                    invite_link = invite.invite_link
+                else:
+                    invite_link = "https://t.me/Bot_Cracker"
+            except Exception:
+                invite_link = "https://t.me/Bot_Cracker"
+
+            btn = [
+                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url=invite_link)],
+                [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={data}")]
+            ]
+
+            await client.send_message(
+                chat_id=user_id,
+                text="Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
+                reply_markup=InlineKeyboardMarkup(btn),
+                parse_mode=enums.ParseMode.MARKDOWN
+            )
+            return
+
+
+        files_ = await get_file_details(file_iid)
+        if not files_:
+            return await message.reply("❌ ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ !")
+
+        try:
+            msg = await client.send_cached_media(
+                chat_id=user_id,
+                file_id=file_iid,
+                protect_content=(pre == "mrsyd"),
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_id}")],
+                    [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
+                ])
+            )
+
+            filetype = msg.media
+            file = getattr(msg, filetype.value)
+            title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+            size = get_size(file.file_size)
+            f_caption = f"<code>{title}</code>"
+
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption = CUSTOM_FILE_CAPTION.format(
+                        file_name=title or '',
+                        file_size=size or '',
+                        file_caption=''
+                    )
+                except:
+                    pass
+
+            await msg.edit_caption(f_caption)
+
+        except Exception as e:
+            await message.reply(f"⚠️ ᴇʀʀᴏʀ ꜱᴇɴᴅɪɴɢ ꜰɪʟᴇ: {e}")
+        return
+        
     elif data.split("-", 1)[0] == "DSTORE":
         sts = await message.reply("<b>Pʟᴇᴀꜱᴇ ᴡᴀɪᴛ...</b>")
         b_string = data.split("-", 1)[1]
