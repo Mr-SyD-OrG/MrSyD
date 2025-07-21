@@ -1,6 +1,7 @@
 import os
 import logging
 import random
+from join_req import force_db, is_rq_subscribed
 import asyncio
 import pytz, string
 from Script import script
@@ -312,7 +313,7 @@ async def start(client, message):
             return await message.reply("❌ ɪɴᴠᴀʟɪᴅ ꜱᴛᴀʀᴛ ᴘᴀʏʟᴏᴀᴅ.")
 
         user_id = message.from_user.id
-        is_sub = await is_req_subscribed(client, message, group_id)
+        is_sub = await is_rq_subscribed(client, message, group_id)
 
         if not is_sub:
             try:
