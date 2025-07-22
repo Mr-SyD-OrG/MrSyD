@@ -180,15 +180,16 @@ async def start(client, message):
                 invite_link = "https://t.me/Bot_Cracker"
 
             btn = [
-                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url=invite_link)],
+                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ¹⊛", url=invite_link)],
+                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url="https://t.me/Bot_Cracker")],
                 [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={data}")]
             ]
 
             await client.send_message(
                 chat_id=user_id,
-                text="Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
+                text="Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.\n\n<b>*ɴᴏᴛᴇ: ᴛʜɪꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ ɪꜱ ɴᴏᴛ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʙᴏᴛ ᴏᴡɴᴇʀ, ɪᴛ ɪꜱ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʀᴇꜱᴩᴇᴄᴛɪᴠᴇ ɢʀᴏᴜᴩ ᴀᴅᴍɪɴ.</b>",
                 reply_markup=InlineKeyboardMarkup(btn),
-                parse_mode=enums.ParseMode.MARKDOWN
+                parse_mode=enums.ParseMode.HTML
             )
             return
 
