@@ -14,6 +14,7 @@ async def see_force_channel(client, message):
 
     group_id = message.chat.id
     user_id = message.from_user.id
+    if (await client.get_chat_member(message.chat.id, message.from_user.id)).status not in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]: return await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴀʟʟᴏᴡᴇᴅ.")
 
     channel_id = await force_db.get_group_channel(group_id)
 
@@ -150,7 +151,7 @@ async def set_force_channel(client: Client, message: Message):
     # Check if user is an admin
     try:
         member = await client.get_chat_member(group_id, user_id)
-        if member.status not in ("administrator", "creator"):
+        if member.status not in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]:
             await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴇᴛ ᴛʜᴇ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ ᴄʜᴀɴɴᴇʟ.")
             return
     except ChatAdminRequired:
