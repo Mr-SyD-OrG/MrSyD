@@ -149,7 +149,10 @@ async def set_force_channel(client, message):
         return await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ.")
 
     temp.FORCE_WAIT[message.chat.id] = message.from_user.id
-    await message.reply("ꜱᴇɴᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ꜱᴇᴛ ᴀꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ.")
+    await message.reply("ꜰᴏʀᴡᴀʀᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ꜱᴇᴛ ᴀꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ.\n<b>ɴᴏᴛᴇ: ꜰᴏʀᴡᴀʀᴅ ᴡɪᴛʜ ᴛᴀɢ</b>\n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 120ꜱ")
+    await asyncio.sleep(120)
+    del temp.FORCE_WAIT[message.chat.id]
+    
 # Step 2: In a general handler
 @Client.on_message(filters.forwarded)
 async def handle_forwarded(client, message):
