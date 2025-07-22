@@ -139,9 +139,9 @@ from pyrogram.types import ChatInviteLink
 
 @Client.on_message(filters.command("setforce"))
 async def set_force_channel(client: Client, message: Message):
-    if message.chat.type == "private":
-        await message.reply("ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴀ ɢʀᴏᴜᴘ ᴡʜᴇʀᴇ ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀᴅᴍɪɴ.")
-        return
+  #  if message.chat.type == "private":
+       # await message.reply("ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴀ ɢʀᴏᴜᴘ ᴡʜᴇʀᴇ ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀᴅᴍɪɴ.")
+      #  return
 
     group_id = message.chat.id
     user_id = message.from_user.id
