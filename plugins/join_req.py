@@ -155,14 +155,16 @@ async def set_force_channel(client: Client, message: Message):
         return await message.reply("❌ ɪ ɴᴇᴇᴅ ᴀᴅᴍɪɴ ʀɪɢʜᴛꜱ ᴛᴏ ᴄʜᴇᴄᴋ.")
 
     await message.reply("📨 ꜱᴇɴᴅ ᴛʜᴇ ʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ. \n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 60ꜱ")
-
-    while True:
-        try:
-            response = await client.listen(group_id, timeout=60)
-            if response.from_user.id == user_id and response.forward_from_chat:
-                break
-        except asyncio.TimeoutError:
-            return await message.reply("⛔ ᴛɪᴍᴇᴏᴜᴛ. ᴄᴀɴᴄᴇʟʟᴇᴅ.")
+    try:
+        while True:
+            try:
+                response = await client.listen(group_id, timeout=60)
+                if response.from_user.id == user_id and response.forward_from_chat:
+                    break
+            except asyncio.TimeoutError:
+                return await message.reply("⛔ ᴛɪᴍᴇᴏᴜᴛ. ᴄᴀɴᴄᴇʟʟᴇᴅ.")
+    except Exception as e:
+        await message.reply(f"{e}")
 
     channel_id = response.forward_from_chat.id
 
