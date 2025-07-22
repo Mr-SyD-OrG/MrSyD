@@ -89,6 +89,7 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
 
     # Find which group (if any) uses this channel for force-sub
     group_doc = await force_db.col.find_one({"channel_id": channel_id})
+    
     if not group_doc:
         return  # This channel is not linked to any group
 
@@ -110,9 +111,10 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
 
 async def is_rq_subscribed(bot, query, group_id):
     user_id = query.from_user.id
-
+    print(f"G: {group_id}")
     # Step 1: Find channel linked to this group
     group_doc = await force_db.col.find_one({"group_id": group_id})
+    print(group_doc)
     if not group_doc:
         print("No group_doc found")
         return True  # No force sub set for this group, allow access
