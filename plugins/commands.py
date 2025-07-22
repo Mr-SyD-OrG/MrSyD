@@ -227,7 +227,13 @@ async def start(client, message):
                 except:
                     pass
 
-            await msg.edit_caption(f_caption)
+            await msg.edit_caption(
+                f_caption,
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_iid}")],
+                    [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
+                ])
+            )
             btn = [[
                 InlineKeyboardButton("! ɢᴇᴛ ꜰɪʟᴇ ᴀɢᴀɪɴ !", callback_data=f'delfile#{file_id}')
             ]]
