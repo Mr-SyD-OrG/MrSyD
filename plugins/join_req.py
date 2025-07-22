@@ -7,7 +7,7 @@ from pyrogram.types import ChatJoinRequest
 from motor.motor_asyncio import AsyncIOMotorClient
 
 @Client.on_message(filters.command("seeforce"))
-async def see_force_channel(client: Client, message: Message):
+async def see_force_channel(client, message):
     if message.chat.type == "private":
         await message.reply("⚠️ ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ᴀ ɢʀᴏᴜᴘ.")
         return
