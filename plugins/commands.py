@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 TIMEZONE = "Asia/Kolkata"
 BATCH_FILES = {}
+SYD = ["😶‍🌫️", "🥶", "🍀", "🌴", "🍀", "🕸", "❄️", "⛈️"]
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -40,6 +41,7 @@ async def start(client, message):
             await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
             await db.add_chat(message.chat.id, message.chat.title)
         return 
+    m=await message.reply_text(random.choice(SYD))
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
@@ -66,19 +68,19 @@ async def start(client, message):
             gtxt = "Gᴏᴏᴅ ᴇᴠᴇɴɪɴG 🌅👋"
         else:
             gtxt = "Gᴏᴏᴅ ɴɪɢʜT 🥱😪👋"
-        m=await message.reply_text("<i>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ <b>ᴍʀ ᴍᴏᴠɪᴇꜱ ꜰɪʟᴇ ʙᴏᴛ</b>.\nʜᴏᴘᴇ ʏᴏᴜ'ʀᴇ ᴅᴏɪɴɢ ᴡᴇʟʟ...</i>")
-        await asyncio.sleep(0.6)
-        await m.edit_text("👀")
-        await asyncio.sleep(0.4)
-        await m.edit_text("⚡")
-        await asyncio.sleep(0.5)
-        await m.edit_text("<b><i>ꜱᴛᴀʀᴛɪɴɢ...</i></b>")
-        await asyncio.sleep(0.4)
-        await m.edit_text("Dᴏɴᴛ ꜰᴏʀɢᴇᴛ ᴛᴏ ꜱᴜᴩᴩᴏʀᴛ ᴜꜱ! @BOT_CRAckers 🍋")
-        await asyncio.sleep(1.0)
-        await m.delete()        
-        m=await message.reply_sticker("CAACAgQAAxkBAAEDWlxmP3-XAxyd2WfZcINd1AL4_xM4kwACFxIAArzT-FOmYU0gLeJu7x4E") 
-        await asyncio.sleep(1)
+       # m=await message.reply_text("<i>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ <b>ᴍʀ ᴍᴏᴠɪᴇꜱ ꜰɪʟᴇ ʙᴏᴛ</b>.\nʜᴏᴘᴇ ʏᴏᴜ'ʀᴇ ᴅᴏɪɴɢ ᴡᴇʟʟ...</i>")
+        #await asyncio.sleep(0.6)
+        #await m.edit_text("👀")
+        #await asyncio.sleep(0.4)
+        #await m.edit_text("⚡")
+       # await asyncio.sleep(0.5)
+     #   await m.edit_text("<b><i>ꜱᴛᴀʀᴛɪɴɢ...</i></b>")
+    #    await asyncio.sleep(0.4)
+       # await m.edit_text("Dᴏɴᴛ ꜰᴏʀɢᴇᴛ ᴛᴏ ꜱᴜᴩᴩᴏʀᴛ ᴜꜱ! @BOT_CRAckers 🍋")
+      #  await asyncio.sleep(1.0)
+      #  await m.delete()        
+     #   m=await message.reply_sticker("CAACAgQAAxkBAAEDWlxmP3-XAxyd2WfZcINd1AL4_xM4kwACFxIAArzT-FOmYU0gLeJu7x4E") 
+      #  await asyncio.sleep(1)
         await m.delete()
         await message.reply_photo(
             photo=random.choice(PICS),
@@ -113,20 +115,20 @@ async def start(client, message):
             gtxt = "Gᴏᴏᴅ ᴇᴠᴇɴɪɴG 🌅👋"
         else:
             gtxt = "Gᴏᴏᴅ ɴɪɢʜT 🥱😪👋"
-        m=await message.reply_text("<i>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ <b>ᴍʀ ᴍᴏᴠɪᴇꜱ ꜰɪʟᴇ ʙᴏᴛ</b>.\nʜᴏᴘᴇ ʏᴏᴜ'ʀᴇ ᴅᴏɪɴɢ ᴡᴇʟʟ...</i>")
-        await asyncio.sleep(0.4)
-        await m.edit_text("👀")
-        await asyncio.sleep(0.5)
-        await m.edit_text("⚡")
-        await asyncio.sleep(0.5)
-        await m.edit_text("<b><i>ꜱᴛᴀʀᴛɪɴɢ...</i></b>")
-        await asyncio.sleep(0.4)
-        await m.edit_text("Dᴏɴᴛ ꜰᴏʀɢᴇᴛ ᴛᴏ ꜱᴜᴩᴩᴏʀᴛ ᴜꜱ! @BOT_CRAckers 🍋")
-        await asyncio.sleep(1.0)
-        await m.delete()        
-        m=await message.reply_sticker("CAACAgUAAxkBAAEDePpmZFgm0WcwNuK93-xyFlxcuERvuAACuRMAAlxlKFdLjAYn7DUluh4E") 
-        await asyncio.sleep(1)
-        await m.delete()
+      #  m=await message.reply_text("<i>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ <b>ᴍʀ ᴍᴏᴠɪᴇꜱ ꜰɪʟᴇ ʙᴏᴛ</b>.\nʜᴏᴘᴇ ʏᴏᴜ'ʀᴇ ᴅᴏɪɴɢ ᴡᴇʟʟ...</i>")
+       # await asyncio.sleep(0.4)
+       # await m.edit_text("👀")
+        #await asyncio.sleep(0.5)
+       # await m.edit_text("⚡")
+      #  await asyncio.sleep(0.5)
+       # await m.edit_text("<b><i>ꜱᴛᴀʀᴛɪɴɢ...</i></b>")
+       # await asyncio.sleep(0.4)
+      #  await m.edit_text("Dᴏɴᴛ ꜰᴏʀɢᴇᴛ ᴛᴏ ꜱᴜᴩᴩᴏʀᴛ ᴜꜱ! @BOT_CRAckers 🍋")
+       # await asyncio.sleep(1.0)
+      #  await m.delete()        
+       # m=await message.reply_sticker("CAACAgUAAxkBAAEDePpmZFgm0WcwNuK93-xyFlxcuERvuAACuRMAAlxlKFdLjAYn7DUluh4E") 
+      #  await asyncio.sleep(1)
+       # await m.delete()
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(message.from_user.mention, gtxt, temp.U_NAME, temp.B_NAME),
