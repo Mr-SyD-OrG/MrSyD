@@ -2283,7 +2283,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
 
-async def auto_filter(client, msg, spoll=False):
+async def auto_flter(client, msg, spoll=False):
     try:
         curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
 
@@ -2424,7 +2424,7 @@ async def auto_filter(client, msg, spoll=False):
         if isinstance(msg, Message):
             await msg.reply(f"❌ An unexpected error occurred. {e}")
 
-async def auto_ilter(client, msg, spoll=False):
+async def auto_filter(client, msg, spoll=False):
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     # reqstr1 = msg.from_user.id if msg.from_user else 0
     # reqstr = await client.get_users(reqstr1)
@@ -2480,15 +2480,19 @@ async def auto_ilter(client, msg, spoll=False):
     FRESH[key] = search
     temp.GETALL[key] = files
     temp.SHORT[message.from_user.id] = message.chat.id
+    try:
+        ch_id = await force_db.get_channel_id(message.chat.id)
+    except Exception as e:
+        ch_id = None
+
     if settings["button"]:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}", url=f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}" if await force_db.get_channel_id(message.chat.id) else None, callback_data=None if await force_db.get_channel_id(message.chat.id) else f"{pre}#{f.file_id}"
-                ),
-            ] 
-            for f in files
-        ]
+        btn = [[
+            InlineKeyboardButton(
+                text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
+                url=f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
+                callback_data=None if ch_id else f"{pre}#{f.file_id}"
+            )
+        ] for f in files]
       #  btn = [
             #[
               #  InlineKeyboardButton(
