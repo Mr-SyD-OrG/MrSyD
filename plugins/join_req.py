@@ -114,6 +114,7 @@ async def is_rq_subscribed(bot, query, group_id):
     # Step 1: Find channel linked to this group
     group_doc = await force_db.col.find_one({"group_id": group_id})
     if not group_doc:
+        print("No group_doc found")
         return True  # No force sub set for this group, allow access
 
     channel_id = group_doc.get("channel_id")
@@ -121,6 +122,7 @@ async def is_rq_subscribed(bot, query, group_id):
 
     # Step 2: Check if user already recorded
     if user_id in user_list:
+        print("User already verified")
         return True
 
     # Step 3: Check membership in channel
