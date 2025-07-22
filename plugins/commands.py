@@ -153,7 +153,7 @@ async def start(client, message):
     if data.startswith("msyd") or data.startswith("mrsyd"):
         try:
             pree = data[:4]  # 'file' or 'filep'
-            group_code = data[4:12]  # 8-digit group ID without -100
+            group_code = data[4:14]  # 8-digit group ID without -100
             group_id = int("-100" + group_code)
             file_iid = data.split("_", 1)[1]
         except Exception:
