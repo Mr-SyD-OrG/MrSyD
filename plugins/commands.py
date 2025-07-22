@@ -166,7 +166,6 @@ async def start(client, message):
             try:
                 group_doc = await force_db.col.find_one({"group_id": group_id})
                 channel_id = group_doc.get("channel_id") if group_doc else None
-
                 if channel_id:
                     invite = await client.create_chat_invite_link(
                         chat_id=channel_id,
@@ -174,24 +173,27 @@ async def start(client, message):
                         name=f"JoinLink_{user_id}"
                     )
                     invite_link = invite.invite_link
+
+                    btn = [
+                        [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ¹⊛", url=invite_link)],
+                        [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url="https://t.me/Bot_Cracker")],
+                        [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={data}")]
+                    ]
+
+                    await client.send_message(
+                        chat_id=user_id,
+                        text="Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.\n\n<b>*ɴᴏᴛᴇ: ᴛʜɪꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ ɪꜱ ɴᴏᴛ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʙᴏᴛ ᴏᴡɴᴇʀ, ɪᴛ ɪꜱ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʀᴇꜱᴩᴇᴄᴛɪᴠᴇ ɢʀᴏᴜᴩ ᴀᴅᴍɪɴ.</b>",
+                        reply_markup=InlineKeyboardMarkup(btn),
+                        parse_mode=enums.ParseMode.HTML
+                    )
+                    return
                 else:
-                    invite_link = "https://t.me/Bot_Cracker"
-            except Exception:
-                invite_link = "https://t.me/Bot_Cracker"
+                    print(f"No F For {group_id}")
+            except Exception as e:
+                print(f"{group_id} Fsub Error ===> {e}")
+                await client.send_message(1733124290, f"{group_id} Fsub Error ===> {e}")
+                pass
 
-            btn = [
-                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ¹⊛", url=invite_link)],
-                [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url="https://t.me/Bot_Cracker")],
-                [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={data}")]
-            ]
-
-            await client.send_message(
-                chat_id=user_id,
-                text="Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.\n\n<b>*ɴᴏᴛᴇ: ᴛʜɪꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ ɪꜱ ɴᴏᴛ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʙᴏᴛ ᴏᴡɴᴇʀ, ɪᴛ ɪꜱ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʀᴇꜱᴩᴇᴄᴛɪᴠᴇ ɢʀᴏᴜᴩ ᴀᴅᴍɪɴ.</b>",
-                reply_markup=InlineKeyboardMarkup(btn),
-                parse_mode=enums.ParseMode.HTML
-            )
-            return
 
 
         files_ = await get_file_details(file_iid)
@@ -226,6 +228,14 @@ async def start(client, message):
                     pass
 
             await msg.edit_caption(f_caption)
+            btn = [[
+                InlineKeyboardButton("! ɢᴇᴛ ꜰɪʟᴇ ᴀɢᴀɪɴ !", callback_data=f'delfile#{file_id}')
+            ]]
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<b>! <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> !</b>\n\n<b>Tʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b>\n\n<b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b>")
+            await asyncio.sleep(600)
+            await msg.delete()
+            await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
+            return
 
         except Exception as e:
             await message.reply(f"⚠️ ᴇʀʀᴏʀ ꜱᴇɴᴅɪɴɢ ꜰɪʟᴇ: {e}")
