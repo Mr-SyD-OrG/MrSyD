@@ -1,8 +1,13 @@
 from pyrogram import Client, filters, enums
-from pyrogram.types import ChatJoinRequest
+from pyrogram.types import ChatJoinRequest, Message
 from database.users_chats_db import db
 from info import ADMINS, SYD_URI, SYD_NAME, AUTH_CHANNEL
 from motor.motor_asyncio import AsyncIOMotorClient
+from pyrogram.enums import ChatMemberStatus
+from pyrogram.errors import ChatAdminRequired, RPCError
+import asyncio
+from pyrogram.errors import UserNotParticipant
+
 
 @Client.on_message(filters.command("seeforce"))
 async def see_force_channel(client, message):
@@ -101,8 +106,7 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
         )
     except Exception:
         pass
-from pyrogram.errors import UserNotParticipant
-from pyrogram import enums
+
 
 async def is_rq_subscribed(bot, query, group_id):
     user_id = query.from_user.id
@@ -133,9 +137,6 @@ async def is_rq_subscribed(bot, query, group_id):
 
     return False
 
-from pyrogram.enums import ChatMemberStatus
-from pyrogram.errors import ChatAdminRequired, RPCError
-import asyncio
 
 @Client.on_message(filters.command("setforce"))
 async def set_force_channel(client: Client, message: Message):
