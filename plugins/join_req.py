@@ -9,6 +9,25 @@ import asyncio
 from pyrogram.errors import UserNotParticipant
 from utils import temp
 
+@Client.on_message(filters.command("delforce"))
+async def delforce_handler(client, message: Message):
+    if message.chat.type == enums.ChatType.PRIVATE:
+        return await message.reply_text(
+            "🔗 ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ `/delforce` ɪɴ ᴀ ɢʀᴏᴜᴘ ᴄʜᴀᴛ ᴡʜᴇʀᴇ ʏᴏᴜ'ʀᴇ ᴀɴ ᴀᴅᴍɪɴ.",
+        )
+
+    member = await client.get_chat_member(message.chat.id, message.from_user.id)
+    if member.status not in (enums.ChatMemberStatus.OWNER, enums.ChatMemberStatus.ADMINISTRATOR):
+        return await message.reply_text("⛔ ʏᴏᴜ ᴍᴜꜱᴛ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ᴛᴏ ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ.")
+
+    chat_id = message.chat.id
+    existing = await force_db.col.find_one({"group_id": chat_id})
+    if not existing:
+        return await message.reply_text("⚠️ ɴᴏ ꜰᴏʀᴄᴇ ꜱᴜʙ ɪꜱ ꜱᴇᴛ ꜰᴏʀ ᴛʜɪꜱ ɢʀᴏᴜᴘ. ᴜꜱᴇ /setforce ᴛᴏ ꜱᴇᴛ.")
+
+    await force_db.col.delete_one({"group_id": chat_id})
+    await message.reply_text("ꜰᴏʀᴄᴇ ꜱᴜʙ ꜱᴇᴛᴛɪɴɢ ꜰᴏʀ ᴛʜɪꜱ ɢʀᴏᴜᴘ ʜᴀꜱ ʙᴇᴇɴ ʀᴇᴍᴏᴠᴇᴅ. ✅")
+
 @Client.on_message(filters.command("seeforce"))
 async def see_force_channel(client, message):
     if message.chat.type == enums.ChatType.PRIVATE:
