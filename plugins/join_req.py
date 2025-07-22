@@ -2,12 +2,51 @@ from pyrogram import Client, filters, enums
 from pyrogram.types import ChatJoinRequest
 from database.users_chats_db import db
 from info import ADMINS, SYD_URI, SYD_NAME, AUTH_CHANNEL
-
 from pyrogram import Client, filters
 from pyrogram.types import ChatJoinRequest
-
 from motor.motor_asyncio import AsyncIOMotorClient
 
+@Client.on_message(filters.command("seeforce"))
+async def see_force_channel(client: Client, message: Message):
+    if message.chat.type == "private":
+        await message.reply("⚠️ ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ᴀ ɢʀᴏᴜᴘ.")
+        return
+
+    group_id = message.chat.id
+    user_id = message.from_user.id
+
+    channel_id = await force_db.get_group_channel(group_id)
+
+    if not channel_id:
+        await client.send_message(user_id, "❌ ɴᴏ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ ꜱᴇᴛ ꜰᴏʀ ᴛʜɪꜱ ɢʀᴏᴜᴘ.")
+        return
+
+    try:
+        chat = await client.get_chat(channel_id)
+        invite = await client.create_chat_invite_link(
+            channel_id,
+            creates_join_request=True,
+            name=f"FS_{group_id}"
+        )
+    except ChatAdminRequired:
+        await client.send_message(user_id, "❌ ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀᴅᴍɪɴ ʀɪɢʜᴛꜱ ɪɴ ᴛʜᴇ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ.")
+        return
+    except Exception as e:
+        await client.send_message(user_id, f"⚠️ ᴇʀʀᴏʀ: `{e}`")
+        return
+
+    text = (
+        f"✅ **ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ ᴅᴇᴛᴀɪʟꜱ:**\n\n"
+        f"**ɴᴀᴍᴇ**: {chat.title}\n"
+        f"**ɪᴅ**: `{channel_id}`\n"
+        f"**ɪɴᴠɪᴛᴇ**: [ᴄʟɪᴄᴋ ᴛᴏ ᴊᴏɪɴ]({invite.invite_link})"
+    )
+
+    try:
+        await client.send_message(user_id, text, disable_web_page_preview=True)
+        await message.reply("📩 ᴅᴇᴛᴀɪʟꜱ ꜱᴇɴᴛ ɪɴ ᴘᴇʀꜱᴏɴᴀʟ ᴄʜᴀᴛ.")
+    except Exception:
+        await message.reply("❌ ᴄᴏᴜʟᴅɴ'ᴛ ꜱᴇɴᴅ ᴍᴇꜱꜱᴀɢᴇ ɪɴ ᴘᴇʀꜱᴏɴᴀʟ ᴄʜᴀᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ ꜰɪʀꜱᴛ.")
 
 class Database:
     def __init__(self, uri: str, db_name: str):
