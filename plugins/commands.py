@@ -1,7 +1,7 @@
 import os
 import logging
 import random
-from join_req import force_db, is_rq_subscribed
+from .join_req import force_db, is_rq_subscribed
 import asyncio
 import pytz, string
 from Script import script
