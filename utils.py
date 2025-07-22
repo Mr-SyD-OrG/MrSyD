@@ -53,7 +53,7 @@ class temp(object):
     SHORT = {}
     SETTINGS = {}
     IMDB_CAP = {}
-
+    FORCE_WAIT = {}
 
 async def is_subscribed(bot, query=None, userid=None):
     try:
