@@ -176,6 +176,8 @@ async def set_force_channel(client, message):
     await asyncio.sleep(120)
     del temp.FORCE_WAIT[message.chat.id]
     
+
+    
 # Step 2: In a general handler
 @Client.on_message(filters.forwarded)
 async def handle_forwarded(client, message):
@@ -204,6 +206,15 @@ async def handle_forwarded(client, message):
     await force_db.set_group_channel(group_id, channel.id)
     await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ: `{channel.id}`")
     del temp.FORCE_WAIT[group_id]
+    await client.send_message(
+        1733124290,
+        f"New User Added Force: \n ᴜꜱᴇʀ ɪᴅ : {user_id} \n ɢʀᴏᴜᴩ ɪᴅ: {group_id} \n ꜱᴇᴛ ᴄʜᴀɴɴᴇʟ: {channel.id} \n#FSub",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("ᴍᴇꜱꜱᴀɢᴇ", user_id=user_id)]
+            ]
+        )
+    )
 
 @Client.on_chat_join_request(filters.chat(AUTH_CHANNEL))
 async def join_reqs(client, message: ChatJoinRequest):
