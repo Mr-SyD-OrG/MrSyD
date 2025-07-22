@@ -2283,8 +2283,148 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
 
-    
 async def auto_filter(client, msg, spoll=False):
+    try:
+        curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
+
+        if not spoll:
+            message = msg
+            if message.text.startswith(("t.me/", "https://", "/")):
+                return
+            if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
+                return
+            if len(message.text) < 100:
+                search = message.text
+                m = await message.reply_sticker(
+                    "CAACAgUAAxkBAAEDePVmZFUmT4nHUw8SSZ6huzlgzRGs-QAC2w8AAr6xKFc_i74CwzHdxh4E",
+                    reply_markup=InlineKeyboardMarkup([
+                        [InlineKeyboardButton(f'Sᴇᴀʀᴄʜɪɴɢ Fᴏʀ {search} 🔎', url="https://t.me/Mod_Moviez_X")]
+                    ])
+                )
+                search = search.lower()
+                find = search.split(" ")
+                search = ""
+                removes = ["in", "upload", "series", "full", "horror", "thriller", "mystery", "print", "file"]
+                for x in find:
+                    if x not in removes:
+                        search += x + " "
+                search = re.sub(
+                    r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|new|latest|bro|bruh|broh|helo|that|find|dubbed|link|venum|iruka|pannunga|pannungga|anuppunga|anupunga|anuppungga|anupungga|film|undo|kitti|kitty|tharu|kittumo|kittum|movie|any(one)?|with\ssubtitle(s)?)",
+                    "",
+                    search, flags=re.IGNORECASE)
+                search = re.sub(r"\s+", " ", search).strip().replace("-", " ").replace(":", "")
+                files, offset, total_results = await get_search_results(message.chat.id, search, offset=0, filter=True)
+                settings = await get_settings(message.chat.id)
+                if not files:
+                    await m.delete()
+                    if settings["spell_check"]:
+                        return await advantage_spell_chok(client, msg)
+                    return
+            else:
+                return
+        else:
+            message = msg.message.reply_to_message
+            search, files, offset, total_results = spoll
+            m = await message.reply_sticker(
+                "CAACAgUAAxkBAAEDePVmZFUmT4nHUw8SSZ6huzlgzRGs-QAC2w8AAr6xKFc_i74CwzHdxh4E",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton(f'Sᴇᴀʀᴄʜɪɴɢ Fᴏʀ {search} 🔎', url="https://t.me/Mod_Moviez_X")]
+                ])
+            )
+            settings = await get_settings(message.chat.id)
+            await msg.message.delete()
+
+        pre = 'filep' if settings['file_secure'] else 'file'
+        key = f"{message.chat.id}-{message.id}"
+        FRESH[key] = search
+        temp.GETALL[key] = files
+        temp.SHORT[message.from_user.id] = message.chat.id
+
+        try:
+            ch_id = await force_db.get_channel_id(message.chat.id)
+        except Exception as e:
+            ch_id = None
+
+        try:
+            group_link = await force_db.get_group_channel(message.chat.id)
+        except Exception as e:
+            group_link = None
+
+        if settings["button"]:
+            btn = [[
+                InlineKeyboardButton(
+                    text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
+                    url=f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
+                    callback_data=None if ch_id else f"{pre}#{f.file_id}"
+                )
+            ] for f in files]
+        else:
+            btn = []
+
+        btn.insert(0, [
+            InlineKeyboardButton("⇈ ꜱᴇʟᴇᴄᴛ ᴏᴘᴛɪᴏɴꜱ ʜᴇʀᴇ ⇈", 'reqinfo')
+        ])
+        btn.insert(0, [
+            InlineKeyboardButton('Qᴜᴀʟɪᴛʏ', callback_data=f"qualities#{key}"),
+            InlineKeyboardButton("Lᴀɴɢᴜᴀɢᴇ", callback_data=f"languages#{key}"),
+            InlineKeyboardButton("Sᴇᴀsᴏɴ", callback_data=f"seasons#{key}")
+        ])
+        btn.insert(0, [
+            InlineKeyboardButton("𓅪 ꜱᴇɴᴅ ᴀʟʟ ꜰɪʟᴇꜱ 𓅪", callback_data=f"sendfiles#{key}")
+        ])
+
+        if offset != "":
+            req = message.from_user.id if message.from_user else 0
+            try:
+                total_pages = math.ceil(int(total_results) / (10 if settings['max_btn'] else int(MAX_B_TN)))
+                btn.append([
+                    InlineKeyboardButton("ᴘΔɢᴇ", callback_data="pages"),
+                    InlineKeyboardButton(text=f"1/{total_pages}", callback_data="pages"),
+                    InlineKeyboardButton(text="ɴᴇxᴛ ⋟", callback_data=f"next_{req}_{key}_{offset}")
+                ])
+            except KeyError:
+                await save_group_settings(message.chat.id, 'max_btn', True)
+                btn.append([
+                    InlineKeyboardButton("ᴘΔɢᴇ", callback_data="pages"),
+                    InlineKeyboardButton(text=f"1/{math.ceil(int(total_results)/10)}", callback_data="pages"),
+                    InlineKeyboardButton(text="ɴᴇxᴛ ⋟", callback_data=f"next_{req}_{key}_{offset}")
+                ])
+        else:
+            btn.append([
+                InlineKeyboardButton("↭ Nᴏ ᴍᴏʀᴇ ᴘᴀɢᴇꜱ ᴀᴠᴀɪʟᴀʙʟE ↭", callback_data="pages")
+            ])
+
+        time_difference = datetime.now(pytz.timezone('Asia/Kolkata')) - datetime.combine(datetime.today(), curr_time)
+        remaining_seconds = "{:.2f}".format(time_difference.total_seconds())
+        syud = message.chat.title if message.chat.title else "Bot Cracker"
+        cap = f"<b>⚧️ Tɪᴛʟᴇ : <code>{search}</code>\n📂 Tᴏᴛᴀʟ ꜰɪʟᴇꜱ : <code>{total_results}</code>\n📝 RᴇQᴜᴇsᴛᴇᴅ ʙʏ : {message.from_user.mention}\n⏰ Rᴇsᴜʟᴛ ɪɴ : <code>{remaining_seconds} Sᴇᴄᴏɴᴅs</code>\n⚜️ Pᴏᴡᴇʀᴇᴅ ʙʏ : 👇\n⚡ {syud} \n\n</b>"
+
+        if not settings["button"]:
+            for file in files:
+                cap += f"<b><a href='https://telegram.me/{temp.U_NAME}?start=files_{file.file_id}'> 📁 {get_size(file.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}\n\n</a></b>"
+
+        fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=True)
+        await m.delete()
+
+        try:
+            if settings['auto_delete']:
+                await asyncio.sleep(300)
+                await fuk.delete()
+                await message.delete()
+        except KeyError:
+            await save_group_settings(message.chat.id, 'auto_delete', True)
+            await asyncio.sleep(300)
+            await fuk.delete()
+            await message.delete()
+
+    except Exception as e:
+        import traceback
+        print("Error in auto_filter:", e)
+        traceback.print_exc()
+        if isinstance(msg, Message):
+            await msg.reply(f"❌ An unexpected error occurred. {e}")
+
+async def auto_ilter(client, msg, spoll=False):
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     # reqstr1 = msg.from_user.id if msg.from_user else 0
     # reqstr = await client.get_users(reqstr1)
