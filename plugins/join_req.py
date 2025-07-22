@@ -6,7 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 @Client.on_message(filters.command("seeforce"))
 async def see_force_channel(client, message):
-    if message.chat.type == "private":
+    if message.chat.type == enums.ChatType.PRIVATE:
         await message.reply("⚠️ ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ᴀ ɢʀᴏᴜᴘ.")
         return
 
@@ -133,65 +133,51 @@ async def is_rq_subscribed(bot, query, group_id):
 
     return False
 
-from pyrogram.types import Message
-from pyrogram.errors import ChatAdminRequired, PeerIdInvalid, RPCError
-from pyrogram.types import ChatInviteLink
+from pyrogram.enums import ChatMemberStatus
+from pyrogram.errors import ChatAdminRequired, RPCError
+import asyncio
 
 @Client.on_message(filters.command("setforce"))
 async def set_force_channel(client: Client, message: Message):
-  #  if message.chat.type == "private":
-       # await message.reply("ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ɪɴ ᴀ ɢʀᴏᴜᴘ ᴡʜᴇʀᴇ ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀᴅᴍɪɴ.")
-      #  return
+    if message.chat.type == enums.ChatType.PRIVATE:
+        await message.reply("ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ᴀ ɢʀᴏᴜᴘ ᴡʜᴇʀᴇ ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀᴅᴍɪɴ.")
+        return
 
     group_id = message.chat.id
     user_id = message.from_user.id
 
-    # Check if user is an admin
     try:
         member = await client.get_chat_member(group_id, user_id)
-        if member.status not in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]:
-            await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴇᴛ ᴛʜᴇ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ ᴄʜᴀɴɴᴇʟ.")
-            return
+        if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
+            return await message.reply("❌ ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ.")
     except ChatAdminRequired:
-        await message.reply("ɪ ɴᴇᴇᴅ ᴀᴅᴍɪɴ ʀɪɢʜᴛꜱ ᴛᴏ ᴄʜᴇᴄᴋ ᴀᴅᴍɪɴꜱ.")
-        return
+        return await message.reply("❌ ɪ ɴᴇᴇᴅ ᴀᴅᴍɪɴ ʀɪɢʜᴛꜱ ᴛᴏ ᴄʜᴇᴄᴋ.")
 
-    await message.reply_text("ꜱᴇɴᴅ ᴛʜᴇ ʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ʏᴏᴜʀ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ ᴄʜᴀɴɴᴇʟ (ᴍᴀᴋᴇ ꜱᴜʀᴇ ɪ ᴀᴍ ᴀɴ ᴀᴅᴍɪɴ ᴛʜᴇʀᴇ).")
+    await message.reply("📨 ꜱᴇɴᴅ ᴛʜᴇ ʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ. \n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 60ꜱ")
 
-    try:
-        response = await client.ask(
-            chat_id=group_id,
-            filters=filters.forwarded & filters.user(user_id),
-            timeout=60
-        )
-    except Exception as e:
-        await message.reply(f"⛔ ᴛɪᴍᴇᴏᴜᴛ. ᴄᴀɴᴄᴇʟᴇᴅ. {e}")
-        return
+    while True:
+        try:
+            response = await client.listen(group_id, timeout=60)
+            if response.from_user.id == user_id and response.forward_from_chat:
+                break
+        except asyncio.TimeoutError:
+            return await message.reply("⛔ ᴛɪᴍᴇᴏᴜᴛ. ᴄᴀɴᴄᴇʟʟᴇᴅ.")
 
-    if not response.forward_from_chat:
-        await message.reply("❌ ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴀ ᴄʜᴀɴɴᴇʟ.")
-        return
+    channel_id = response.forward_from_chat.id
 
-    channel = response.forward_from_chat
-    channel_id = channel.id
-
-    # Check if bot has permission to create invite link
     try:
         await client.create_chat_invite_link(
             chat_id=channel_id,
             creates_join_request=True,
-            name=f"TestPerm_{group_id}"
+            name=f"ForceJoin_{group_id}"
         )
     except ChatAdminRequired:
-        await message.reply("❌ ɪ ɴᴇᴇᴅ ᴛᴏ ʙᴇ ᴀɴ ᴀᴅᴍɪɴ ɪɴ ᴛʜᴀᴛ ᴄʜᴀɴɴᴇʟ ᴡɪᴛʜ ᴘᴇʀᴍɪꜱꜱɪᴏɴ ᴛᴏ ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ ʟɪɴᴋꜱ.")
-        return
+        return await message.reply("❌ ɪ ɴᴇᴇᴅ ᴀᴅᴍɪɴ ᴘᴇʀᴍɪꜱꜱɪᴏɴꜱ ɪɴ ᴛʜᴀᴛ ᴄʜᴀɴɴᴇʟ.")
     except RPCError as e:
-        await message.reply(f"⚠️ ᴇʀʀᴏʀ: {e}")
-        return
+        return await message.reply(f"⚠️ ᴇʀʀᴏʀ: {e}")
 
-    # All checks passed — store channel for group
     await force_db.set_group_channel(group_id, channel_id)
-    await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ ᴛᴏ `{channel_id}`.")
+    await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ: `{channel_id}`")
 
 @Client.on_chat_join_request(filters.chat(AUTH_CHANNEL))
 async def join_reqs(client, message: ChatJoinRequest):
