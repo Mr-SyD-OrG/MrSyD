@@ -2,8 +2,6 @@ from pyrogram import Client, filters, enums
 from pyrogram.types import ChatJoinRequest
 from database.users_chats_db import db
 from info import ADMINS, SYD_URI, SYD_NAME, AUTH_CHANNEL
-from pyrogram import Client, filters
-from pyrogram.types import ChatJoinRequest
 from motor.motor_asyncio import AsyncIOMotorClient
 
 @Client.on_message(filters.command("seeforce"))
@@ -166,8 +164,8 @@ async def set_force_channel(client: Client, message: Message):
             filters=filters.forwarded & filters.user(user_id),
             timeout=60
         )
-    except Exception:
-        await message.reply("⛔ ᴛɪᴍᴇᴏᴜᴛ. ᴄᴀɴᴄᴇʟᴇᴅ.")
+    except Exception as e:
+        await message.reply(f"⛔ ᴛɪᴍᴇᴏᴜᴛ. ᴄᴀɴᴄᴇʟᴇᴅ. {e}")
         return
 
     if not response.forward_from_chat:
