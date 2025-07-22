@@ -204,7 +204,7 @@ async def start(client, message):
                 file_id=file_iid,
                 protect_content=(pree == "mrsyd"),
                 reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_id}")],
+                    [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_iid}")],
                     [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
                 ])
             )
