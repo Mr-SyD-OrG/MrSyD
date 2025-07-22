@@ -2344,16 +2344,24 @@ async def auto_filter(client, msg, spoll=False):
         btn = [
             [
                 InlineKeyboardButton(
-                    text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}", 
-                    **(
-                        {"url": f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}"}
-                        if await force_db.get_channel_id(message.chat.id)
-                        else {"callback_data": f"{pre}#{f.file_id}"}
-                    )
+                    text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}", url=f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}" if await force_db.get_channel_id(message.chat.id) else None, callback_data=None if await force_db.get_group_channel(message.chat.id) else f"{pre}#{f.file_id}"
                 ),
             ] 
             for f in files
         ]
+      #  btn = [
+            #[
+              #  InlineKeyboardButton(
+                #    text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}", 
+                  #  **(
+                       # {"url": f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}"}
+                       # if await force_db.get_channel_id(message.chat.id)
+                    #    else {"callback_data": f"{pre}#{f.file_id}"}
+                   # )
+               # ),
+          #  ] 
+        #    for f in files
+      #  ]
 
      #   btn = [
           #  [
