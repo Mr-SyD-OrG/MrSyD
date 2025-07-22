@@ -202,7 +202,7 @@ async def start(client, message):
             msg = await client.send_cached_media(
                 chat_id=user_id,
                 file_id=file_iid,
-                protect_content=(pre == "mrsyd"),
+                protect_content=(pree == "mrsyd"),
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_id}")],
                     [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
