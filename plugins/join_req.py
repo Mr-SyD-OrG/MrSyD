@@ -7,7 +7,7 @@ from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import ChatAdminRequired, RPCError
 import asyncio
 from pyrogram.errors import UserNotParticipant
-
+from utils import temp
 
 @Client.on_message(filters.command("seeforce"))
 async def see_force_channel(client, message):
