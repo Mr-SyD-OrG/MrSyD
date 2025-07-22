@@ -138,49 +138,46 @@ async def is_rq_subscribed(bot, query, group_id):
     return False
 
 
+# Step 1: When /setforce is used
 @Client.on_message(filters.command("setforce"))
-async def set_force_channel(client: Client, message: Message):
-    if message.chat.type == enums.ChatType.PRIVATE:
-        await message.reply("ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ᴀ ɢʀᴏᴜᴘ ᴡʜᴇʀᴇ ʏᴏᴜ ᴀʀᴇ ᴀɴ ᴀᴅᴍɪɴ.")
-        return
+async def set_force_channel(client, message):
+    if message.chat.type != ChatType.SUPERGROUP:
+        return await message.reply("ᴜꜱᴇ ɪɴ ɢʀᴏᴜᴘ")
 
+    member = await client.get_chat_member(message.chat.id, message.from_user.id)
+    if member.status not in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]:
+        return await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ.")
+
+    temp.FORCE_WAIT[message.chat.id] = message.from_user.id
+    await message.reply("ꜱᴇɴᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ꜱᴇᴛ ᴀꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ.")
+# Step 2: In a general handler
+@Client.on_message(filters.forwarded)
+async def handle_forwarded(client, message):
     group_id = message.chat.id
     user_id = message.from_user.id
 
-    try:
-        member = await client.get_chat_member(group_id, user_id)
-        if member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
-            return await message.reply("❌ ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ᴀɴ ᴀᴅᴍɪɴ.")
-    except ChatAdminRequired:
-        return await message.reply("❌ ɪ ɴᴇᴇᴅ ᴀᴅᴍɪɴ ʀɪɢʜᴛꜱ ᴛᴏ ᴄʜᴇᴄᴋ.")
+    if group_id not in temp.FORCE_WAIT:
+        return
 
-    await message.reply("📨 ꜱᴇɴᴅ ᴛʜᴇ ʟᴀꜱᴛ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ. \n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 60ꜱ")
+    if temp.FORCE_WAIT[group_id] != user_id:
+        return
+
+    if not message.forward_from_chat:
+        return await message.reply("ꜰᴏʀᴡᴀʀᴅ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴀ ᴄʜᴀɴɴᴇʟ ᴏɴʟʏ.")
+    member = await client.get_chat_member(message.chat.id, message.from_user.id)
+    if member.status not in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]:
+        return await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ.")
+
+    channel = message.forward_from_chat
+
     try:
-        while True:
-            try:
-                response = await client.listen(group_id, timeout=60)
-                if response.from_user.id == user_id and response.forward_from_chat:
-                    break
-            except asyncio.TimeoutError:
-                return await message.reply("⛔ ᴛɪᴍᴇᴏᴜᴛ. ᴄᴀɴᴄᴇʟʟᴇᴅ.")
+        await client.create_chat_invite_link(channel.id, creates_join_request=True)
     except Exception as e:
-        await message.reply(f"{e}")
+        return await message.reply(f"ᴄᴀɴ'ᴛ ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ: {e}")
 
-    channel_id = response.forward_from_chat.id
-
-    try:
-        await client.create_chat_invite_link(
-            chat_id=channel_id,
-            creates_join_request=True,
-            name=f"ForceJoin_{group_id}"
-        )
-    except ChatAdminRequired:
-        return await message.reply("❌ ɪ ɴᴇᴇᴅ ᴀᴅᴍɪɴ ᴘᴇʀᴍɪꜱꜱɪᴏɴꜱ ɪɴ ᴛʜᴀᴛ ᴄʜᴀɴɴᴇʟ.")
-    except RPCError as e:
-        return await message.reply(f"⚠️ ᴇʀʀᴏʀ: {e}")
-
-    await force_db.set_group_channel(group_id, channel_id)
-    await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ: `{channel_id}`")
+    await force_db.set_group_channel(group_id, channel.id)
+    await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ: `{channel.id}`")
+    del temp.FORCE_WAIT[group_id]
 
 @Client.on_chat_join_request(filters.chat(AUTH_CHANNEL))
 async def join_reqs(client, message: ChatJoinRequest):
