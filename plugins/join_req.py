@@ -19,7 +19,7 @@ async def see_force_channel(client, message):
     user_id = message.from_user.id
     if (await client.get_chat_member(message.chat.id, message.from_user.id)).status not in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]: return await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴀʟʟᴏᴡᴇᴅ.")
 
-    channel_id = await force_db.get_group_channel(group_id)
+    channel_id = await force_db.get_channel_id(group_id)
 
     if not channel_id:
         await client.send_message(user_id, "❌ ɴᴏ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ ꜱᴇᴛ ꜰᴏʀ ᴛʜɪꜱ ɢʀᴏᴜᴘ.")
