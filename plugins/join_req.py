@@ -141,7 +141,7 @@ async def is_rq_subscribed(bot, query, group_id):
 # Step 1: When /setforce is used
 @Client.on_message(filters.command("setforce"))
 async def set_force_channel(client, message):
-    if message.chat.type != ChatType.SUPERGROUP:
+    if message.chat.type != enums.ChatType.SUPERGROUP:
         return await message.reply("ᴜꜱᴇ ɪɴ ɢʀᴏᴜᴘ")
 
     member = await client.get_chat_member(message.chat.id, message.from_user.id)
