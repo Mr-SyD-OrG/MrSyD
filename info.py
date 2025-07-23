@@ -27,6 +27,9 @@ MELCOW_VID = environ.get("MELCOW_VID", "https://graph.org/file/a56a9c555e43529b2
 SPELL_IMG = environ.get("SPELL_IMG", "https://telegra.ph/file/86b7b7e2aa7e38f328902.jpg")
 SUBSCRIPTION = (environ.get('SUBSCRIPTION', 'https://graph.org/file/64afb8fff79e1b3d1706Fa'))
 CODE = (environ.get('CODE', 'https://graph.org/file/64afb8fff79e1b3d17066.jpg'))
+SUB1 = (environ.get('SUB1', 'https://graph.org/file/64afb8fff79e1b3d1706Fa'))
+SUB2 = (environ.get('SUB2', 'https://graph.org/file/64afb8fff79e1b3d1706Fa'))
+
 
 #stream link shortner
 STREAM_SITE = (environ.get('STREAM_SITE', 'cuty.io'))
