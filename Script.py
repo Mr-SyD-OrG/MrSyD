@@ -4,7 +4,7 @@ class script(object):
 I Cᴀɴ Pʀᴏᴠɪᴅᴇ Mᴏᴠɪᴇ Fᴏʀ Yᴏᴜ Jᴜsᴛ Tʏᴩᴇ Aɴᴅ Sᴇɴᴅ Tʜᴇ Mᴏᴠɪᴇ Aɴᴅ Yᴇᴀʀ ✨
 <blockquote>Oɴᴇ Oꜰ Tʜᴇ Wᴏʀʟᴅꜱ Cᴏᴏʟᴇꜱᴛ, Bɪɢɢᴇꜱᴛ Aɴᴅ Fɪɴᴇꜱᴛ DᴀᴛᴀBᴀꜱᴇ</blockquote></b>"""
     
-    START_TXT = """<b>ʜᴇʏ {}🤘,</b> {}\n\n<i>ɪ ᴀᴍ ᴛʜᴇ ᴍᴏꜱᴛ ᴘᴏᴡᴇʀꜰᴜʟ ᴀᴜᴛᴏ ꜰɪʟᴛᴇʀ ʙᴏᴛ ᴡɪᴛʜ ᴩʀᴇᴍɪᴜᴍ ꜰᴇᴀᴛᴜʀᴇꜱ ❄️.\nʏᴏᴜ ᴄᴀɴ ꜱᴇᴛ ʏᴏᴜʀ ᴏᴡɴ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ ꜰᴏʀ ʏᴏᴜʀ ɢʀᴏᴜᴩ.</i>\n\n<blockquote>ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ <a href="https://t.me/Mod_Moviez_X">Mᴏᴅ ᴍᴏᴠɪeᴢ ˹x˼™ ᠰ𐂮</a>🍓 </blockqoute>"""
+    START_TXT = """<b>ʜᴇʏ {}🤘, {}</b>\n\n<i>ɪ ᴀᴍ ᴛʜᴇ ᴍᴏꜱᴛ ᴘᴏᴡᴇʀꜰᴜʟ ᴀᴜᴛᴏ ꜰɪʟᴛᴇʀ ʙᴏᴛ ᴡɪᴛʜ ᴩʀᴇᴍɪᴜᴍ ꜰᴇᴀᴛᴜʀᴇꜱ ❄️.\nʏᴏᴜ ᴄᴀɴ ꜱᴇᴛ ʏᴏᴜʀ ᴏᴡɴ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ ꜰᴏʀ ʏᴏᴜʀ ɢʀᴏᴜᴩ.</i>\n\n<b><blockquote>ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ <a href="https://t.me/Mod_Moviez_X">Mᴏᴅ ᴍᴏᴠɪeᴢ ˹x˼™ ᠰ𐂮</a>🍓 </blockqoute></b>"""
 
     GSTART_TXT = """<b>ʜᴇʏ {}🫶,\n\nɪ ᴀᴍ ᴛʜᴇ ᴍᴏꜱᴛ ᴘᴏᴡᴇʀꜰᴜʟ ᴀᴜᴛᴏ ꜰɪʟᴛᴇʀ ʙᴏᴛ 💭 ᴡɪᴛʜ ᴘʀᴇᴍɪᴜᴍ ꜰᴇᴀᴛᴜʀᴇꜱ ❄️.\nʏᴏᴜ ᴄᴀɴ ꜱᴇᴛ ʏᴏᴜʀ ᴏᴡɴ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ ꜰᴏʀ ʏᴏᴜʀ ɢʀᴏᴜᴩ.\n<blockqoute> ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ <a href="https://t.me/Mod_Moviez_X">Mᴏᴅ ᴍᴏᴠɪeᴢ ˹x˼™ ᠰ𐂮</a>🍓 </blockqoute></b>"""
     
@@ -12,7 +12,7 @@ I Cᴀɴ Pʀᴏᴠɪᴅᴇ Mᴏᴠɪᴇ Fᴏʀ Yᴏᴜ Jᴜsᴛ Tʏᴩᴇ Aɴᴅ
 ᴄʜᴏᴏꜱᴇ ᴛʜᴇ ᴄᴀᴛᴇɢᴏʀʏ ᴏꜰ ᴄᴏᴍᴍᴀɴᴅ ʏᴏᴜ ᴡᴀɴᴛ ᴄᴜʀʀᴇɴᴛʟʏ 💥.</b>"""
     HLP_TXT = """<b>ʜᴇʏ {},
 Cʜᴏᴏꜱᴇ Tʜᴇ Ғᴇᴀᴛᴜʀᴇ Tʜᴀᴛ Yᴏᴜ Nᴇᴇᴅ..... Pʟᴇᴀꜱᴇ.. 😇</b>"""
-    ABOUT_TXT = """<b>‣ Mʏ ɴΔᴍᴇ : {}\n‣ Oᴡɴᴇʀ : <a href='https://t.me/SyD_XyZ'>Mг SƴD 🪩</a>\n‣ Sᴜᴩᴩᴏʀᴛᴇʀ : <a href='tg://settings'>{} {}</a> \n‣ LɪʙʀΔʀʏ : <a href='https://t.me/+-VpGTWWWTldhZWNl'>Tɢ 🫥</a>\n‣ LᴀɴɢᴜΔɢᴇ : <a href='https://t.me/+oej8cujHMFJhNmI9'>🎐Δʜʜ...</a>\n‣ DᴀᴛΔ-Bᴀsᴇ : <a href='https://t.me/+FVhNXfcyt9c3NjFl'>Pʀᴏ..ᴇᴅ</a>\n‣ ʙΔᴄᴋ-Uᴩ : <a href="https://t.me/nt_Backup/5">UʀɢΞɴᴛ BΔᴄᴋ-Uᴩ🎗🔙🔄</a>\n‣ Hᴏsᴛᴇᴅ Δᴛ  : <a href='https://t.me/mod_moviez_x'>Tɢ 🫥</a>\n‣ Bᴜɪʟᴅ Vᴇʀꜱɪᴏɴ : ᴠ1.0 [ᴍʀ.ꜱʏᴅ✨]</b>"""
+    ABOUT_TXT = """<b>‣ Mʏ ɴᴀᴍᴇ : {}\n‣ Oᴡɴᴇʀ : <a href='https://t.me/SyD_XyZ'>Mг SƴD 🪩</a>\n‣ Sᴜᴩᴩᴏʀᴛᴇʀ : <a href='tg://settings'>{} {}</a> \n‣ Lɪʙʀᴀʀʏ : <a href='https://t.me/+-VpGTWWWTldhZWNl'>Tɢ 🫥</a>\n‣ Lᴀɴɢᴜᴀɢᴇ : <a href='https://t.me/+0Zi1FC4ulo8zYzVl'>🎐Δʜʜ...</a>\n‣ DᴀᴛΔ-Bᴀsᴇ : <a href='https://t.me/+FVhNXfcyt9c3NjFl'>Pʀᴏ..ᴇᴅ</a>\n‣ ʙΔᴄᴋ-Uᴩ : <a href="https://t.me/nt_Backup/5">UʀɢΞɴᴛ BΔᴄᴋ-Uᴩ🎗🔙🔄</a>\n‣ Hᴏsᴛᴇᴅ Δᴛ  : <a href='https://t.me/mod_moviez_x'>Tɢ 🫥</a>\n‣ Bᴜɪʟᴅ Vᴇʀꜱɪᴏɴ : ᴠ1.0 [ᴍʀ.ꜱʏᴅ✨]</b>"""
     
     CHANNELS = """
 <b>⚡ Oᴜʀ Gʀᴏᴜᴘs Δɴ' Cʜᴀɴɴᴇʟs Iɴғᴏ.. ⚡ 
