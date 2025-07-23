@@ -1950,8 +1950,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Exᴛʀᴀ', callback_data='xtra')
-        ], [
+          #  InlineKeyboardButton('Exᴛʀᴀ', callback_data='xtra')
+     #   ], [
             InlineKeyboardButton('Uꜱᴇʀꜱ', callback_data='users'),
             InlineKeyboardButton('Gʀᴏᴜᴘꜱ', callback_data='group')
         ], [
@@ -2039,13 +2039,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [[
             InlineKeyboardButton('!! Dɪꜱᴄʟᴀɪᴍᴇʀ !!', callback_data='disclaimer')
         ], [
-            InlineKeyboardButton('♕ Oᴡɴᴇʀ ♕', user_id=1733124290),
-            InlineKeyboardButton('BΔᴄᴋ-Uᴩ 💭', url="https://t.me/nt_Backup/5"),
-            InlineKeyboardButton('✧ ꜱᴛΔᴛꜱ ✧', callback_data='stats')
+            InlineKeyboardButton('♕ ᴏᴡɴᴇʀ ♕', user_id=1733124290),
+            InlineKeyboardButton('ʙᴀᴄᴋ-ᴜᴩ', url="https://t.me/nt_Backup/5"),
+            InlineKeyboardButton('✧ ꜱᴛᴀᴛꜱ ✧', callback_data='stats')
         ], [
             InlineKeyboardButton('⛈ ʀᴇɴᴅᴇʀɪɴɢ ꜱᴛᴀᴛᴜꜱ ⛈',callback_data='rendr')
         ], [
-            InlineKeyboardButton('♙ ʜ0ᴍᴇ ', callback_data='start'),
+            InlineKeyboardButton('♙ ʜᴏᴍᴇ ', callback_data='start'),
             InlineKeyboardButton('ᴄʟᴏꜱᴇ ⊖', callback_data='close_data')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -2183,20 +2183,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
             )   
     
     elif query.data == "disclaimer":
-            btn = [[
-                    InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="about")
-            ]]
-            reply_markup = InlineKeyboardMarkup(btn)
-            await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
+           # btn = [[
+                  #  InlineKeyboardButton("⇋ ʙᴀᴄᴋ ⇋", callback_data="about")
+           # ]]
+            #reply_markup = InlineKeyboardMarkup(btn)
+            await client.send_message(
+                query.message.chat.id, 
+                text=script.DISCLAIMER_TXT, 
+                parse_mode=enums.ParseMode.HTML
             )
-            await query.message.edit_text(
-                text=script.DISCLAIMER_TXT,
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML 
-            )
+            
     elif query.data.startswith("setgs"):
         ident, set_type, status, grp_id = query.data.split("#")
         grpid = await active_connection(str(query.from_user.id))
