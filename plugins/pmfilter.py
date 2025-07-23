@@ -2010,21 +2010,27 @@ async def cb_handler(client: Client, query: CallbackQuery):
             )
 
     elif query.data == "jsyd":
-            btn = [[
-                    InlineKeyboardButton("⟸ Bᴀᴄᴋ", callback_data="xtra"),
-                    InlineKeyboardButton("✆ Cᴏɴᴛᴀᴄᴛ ✆", user_id=1733124290)
-                  ]]
-            await client.edit_message_media(
-                query.message.chat.id, 
-                query.message.id, 
-                InputMediaPhoto(random.choice(PICS))
-            )
-            reply_markup = InlineKeyboardMarkup(btn)
-            await query.message.edit_text(
-                text=(script.FSUB_TXT),
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            )
+        btn = [[
+            InlineKeyboardButton("⟸ Bᴀᴄᴋ", callback_data="xtra"),
+            InlineKeyboardButton("✆ Cᴏɴᴛᴀᴄᴛ ✆", user_id=1733124290)
+        ]]
+        await client.edit_message_media(
+            query.message.chat.id, 
+            query.message.id, 
+            InputMediaPhoto(random.choice(PICS))
+        )
+        reply_markup = InlineKeyboardMarkup(btn)
+        await query.message.edit_text(
+            text=(script.FSUB_TXT),
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+        meddia = [
+            InputMediaPhoto(media=SUB1, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ"),
+            InputMediaPhoto(media=SUB2, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ")
+        ]
+        await client.send_media_group(chat_id=message.chat.id, media=meddia)
+            
         
     elif query.data == "ytdl":
         buttons = [[
