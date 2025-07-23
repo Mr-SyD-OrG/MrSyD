@@ -1950,8 +1950,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "help":
         buttons = [[
-          #  InlineKeyboardButton('Exᴛʀᴀ', callback_data='xtra')
-     #   ], [
+            InlineKeyboardButton('Fᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ (ᴊᴏɪɴ-ʀᴇqᴜᴇꜱᴛ)', callback_data='jsyd')
+        ], [
             InlineKeyboardButton('Uꜱᴇʀꜱ', callback_data='users'),
             InlineKeyboardButton('Gʀᴏᴜᴘꜱ', callback_data='group')
         ], [
@@ -2005,6 +2005,23 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup = InlineKeyboardMarkup(btn)
             await query.message.edit_text(
                 text=(script.TELE_TXT),
+                reply_markup=reply_markup,
+                parse_mode=enums.ParseMode.HTML
+            )
+
+    elif query.data == "jsyd":
+            btn = [[
+                    InlineKeyboardButton("⟸ Bᴀᴄᴋ", callback_data="xtra"),
+                    InlineKeyboardButton("✆ Cᴏɴᴛᴀᴄᴛ ✆", user_id=1733124290)
+                  ]]
+            await client.edit_message_media(
+                query.message.chat.id, 
+                query.message.id, 
+                InputMediaPhoto(random.choice(PICS))
+            )
+            reply_markup = InlineKeyboardMarkup(btn)
+            await query.message.edit_text(
+                text=(script.FSUB_TXT),
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
