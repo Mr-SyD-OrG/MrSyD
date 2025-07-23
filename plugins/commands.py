@@ -56,7 +56,7 @@ async def start(client, message):
                     InlineKeyboardButton('⇱  ᴄᴏᴍᴍᴀɴᴅꜱ  ⇲', callback_data='help'),
                     InlineKeyboardButton('⊛ ᴀʙᴏᴜᴛ ⊛', callback_data='about')
                 ],[
-                    InlineKeyboardButton("◎ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ (ᴊᴏɪɴ ʀᴇqᴜᴇꜱᴛ) ◎", callback_data="premium_info")
+                    InlineKeyboardButton("◎ ꜰᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ (ᴊᴏɪɴ-ʀᴇqᴜᴇꜱᴛ) ◎", callback_data="jsyd")
                   ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         current_time = datetime.now(pytz.timezone(TIMEZONE))
