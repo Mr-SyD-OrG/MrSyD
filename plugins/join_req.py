@@ -13,7 +13,7 @@ from utils import temp
 async def delforce_handler(client, message: Message):
     if message.chat.type == enums.ChatType.PRIVATE:
         return await message.reply_text(
-            "🔗 ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ `/delforce` ɪɴ ᴀ ɢʀᴏᴜᴘ ᴄʜᴀᴛ ᴡʜᴇʀᴇ ʏᴏᴜ'ʀᴇ ᴀɴ ᴀᴅᴍɪɴ.",
+            "⚠️ ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ...",
         )
 
     member = await client.get_chat_member(message.chat.id, message.from_user.id)
@@ -31,7 +31,7 @@ async def delforce_handler(client, message: Message):
 @Client.on_message(filters.command("seeforce"))
 async def see_force_channel(client, message):
     if message.chat.type == enums.ChatType.PRIVATE:
-        await message.reply("⚠️ ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ᴀ ɢʀᴏᴜᴘ.")
+        await message.reply("⚠️ ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ...")
         return
 
     group_id = message.chat.id
@@ -165,7 +165,7 @@ async def is_rq_subscribed(bot, query, group_id):
 @Client.on_message(filters.command("setforce"))
 async def set_force_channel(client, message):
     if message.chat.type != enums.ChatType.SUPERGROUP:
-        return await message.reply("ᴜꜱᴇ ɪɴ ɢʀᴏᴜᴘ")
+        return await message.reply("⚠️ ᴘʟᴇᴀꜱᴇ ᴜꜱᴇ ᴛʜɪꜱ ɪɴ ʏᴏᴜʀ ɢʀᴏᴜᴘ...")
 
     member = await client.get_chat_member(message.chat.id, message.from_user.id)
     if member.status not in [enums.ChatMemberStatus.ADMINISTRATOR, enums.ChatMemberStatus.OWNER]:
