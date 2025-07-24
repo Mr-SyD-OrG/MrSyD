@@ -176,11 +176,23 @@ async def set_force_channel(client, message):
         return await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ.")
 
     temp.FORCE_WAIT[message.chat.id] = message.from_user.id
-    m=await message.reply("ꜰᴏʀᴡᴀʀᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ꜱᴇᴛ ᴀꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ.\n<b>ɴᴏᴛᴇ: ꜰᴏʀᴡᴀʀᴅ ᴡɪᴛʜ ᴛᴀɢ</b>\n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 120ꜱ")
-    await asyncio.sleep(120)
-    del temp.FORCE_WAIT[message.chat.id]
-    await m.delete()
-    await message.reply("ᴛɪᴍᴇ-ᴏᴜᴛ ᴩʟᴇᴀꜱᴇ ꜱᴛᴀʀᴛ ᴀɢᴀɪɴ. /setforce")
+
+    m = await message.reply(
+        "ꜰᴏʀᴡᴀʀᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ꜱᴇᴛ ᴀꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ.\n"
+        "<b>ɴᴏᴛᴇ: ꜰᴏʀᴡᴀʀᴅ ᴡɪᴛʜ ᴛᴀɢ</b>\n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 120ꜱ"
+    )
+
+    for _ in range(120):
+        await asyncio.sleep(1)
+        if message.chat.id not in temp.FORCE_WAIT:
+            await m.delete()
+            return  # silently quit if already set
+
+    if message.chat.id in temp.FORCE_WAIT:
+        del temp.FORCE_WAIT[message.chat.id]
+        await m.delete()
+        await message.reply("ᴛɪᴍᴇ-ᴏᴜᴛ ᴩʟᴇᴀꜱᴇ ꜱᴛᴀʀᴛ ᴀɢᴀɪɴ. /setforce")
+
         
         
     
