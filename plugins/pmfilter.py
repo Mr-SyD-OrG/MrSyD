@@ -2030,7 +2030,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InputMediaPhoto(media=SUB1, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ"),
                 InputMediaPhoto(media=SUB2, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ")
             ]
-            await client.send_media_group(chat_id=message.chat.id, media=meddia)
+            await client.send_media_group(chat_id=query.message.chat.id, media=meddia)
         except Exception as e:
             print(e)
         
