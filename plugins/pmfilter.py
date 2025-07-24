@@ -1876,7 +1876,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         buttons = [[
             InlineKeyboardButton('🎐 Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ 🎐', url='https://t.me/Bot_cracker')
         ],[
-            InlineKeyboardButton('🔍 Gʀᴏᴜᴘ¹', url='https://t.me/+DqCTrhaymr9mYWZl'),
+            InlineKeyboardButton('🔍 Gʀᴏᴜᴘ¹', url='https://t.me/+Z5tbvbuW6A9mMjRl'),
             InlineKeyboardButton('Gʀᴏᴜᴘ² ', url='https://t.me/+5n7vViwKXJJiMjhl'),
             InlineKeyboardButton('Gʀᴏᴜᴘ³ 🔎', url='https://t.me/+kiyp-7aRHDE5YjY1')
         ],[
@@ -1950,12 +1950,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Fᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ (ᴊᴏɪɴ-ʀᴇqᴜᴇꜱᴛ)', callback_data='jsyd')
+            InlineKeyboardButton('Eɴᴛᴇʀᴛᴀɪɴᴍᴇɴᴛ', callback_data='enter')
         ], [
             InlineKeyboardButton('Uꜱᴇʀꜱ', callback_data='users'),
             InlineKeyboardButton('Gʀᴏᴜᴘꜱ', callback_data='group')
         ], [
-            InlineKeyboardButton('Eɴᴛᴇʀᴛᴀɪɴᴍᴇɴᴛ', callback_data='enter')
+            InlineKeyboardButton('Fᴏʀᴄᴇ ꜱᴜʙꜱᴄʀɪʙᴇ (ᴊᴏɪɴ-ʀᴇqᴜᴇꜱᴛ)', callback_data='jsyd')
         ], [
             InlineKeyboardButton('⇋ ʜ0ᴍᴇ ⇋', callback_data='start')
         ]]
@@ -2011,7 +2011,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
 
     elif query.data == "jsyd":
         btn = [[
-            InlineKeyboardButton("⟸ Bᴀᴄᴋ", callback_data="xtra"),
+            InlineKeyboardButton("⟸ Bᴀᴄᴋ", callback_data="help"),
             InlineKeyboardButton("✆ Cᴏɴᴛᴀᴄᴛ ✆", user_id=1733124290)
         ]]
         await client.edit_message_media(
