@@ -2252,7 +2252,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(
                 query.message.chat.id, 
                 text=script.DISCLAIMER_TXT, 
-                parse_mode=enums.ParseMode.HTML
+                parse_mode=enums.ParseMode.HTML,
+                disable_web_page_preview=True
             )
             
     elif query.data.startswith("setgs"):
