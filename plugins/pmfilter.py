@@ -2025,12 +2025,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-        meddia = [
-            InputMediaPhoto(media=SUB1, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ"),
-            InputMediaPhoto(media=SUB2, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ")
-        ]
-        await client.send_media_group(chat_id=message.chat.id, media=meddia)
-            
+        try:
+            meddia = [
+                InputMediaPhoto(media=SUB1, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ"),
+                InputMediaPhoto(media=SUB2, caption="ꜱᴀᴍᴩʟᴇ ᴡᴀʏ")
+            ]
+            await client.send_media_group(chat_id=message.chat.id, media=meddia)
+        except Exception as e:
+            print(e)
         
     elif query.data == "ytdl":
         buttons = [[
