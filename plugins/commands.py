@@ -202,11 +202,13 @@ async def start(client, message):
         files_ = await get_file_details(file_iid)
         if not files_:
             return await message.reply("❌ ɴᴏ ꜱᴜᴄʜ ꜰɪʟᴇ ᴇxɪꜱᴛꜱ !")
-
+        files = files_[0]
+        title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.replace('_', ' ').split()))
         try:
             msg = await client.send_cached_media(
                 chat_id=user_id,
                 file_id=file_iid,
+                caption=title,
                 protect_content=(pree == "mrsyd"),
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_iid}")],
@@ -216,7 +218,7 @@ async def start(client, message):
 
             filetype = msg.media
             file = getattr(msg, filetype.value)
-            title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), file.file_name.split()))
+            title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.replace('_', ' ').split()))
             size = get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
 
