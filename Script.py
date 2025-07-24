@@ -39,14 +39,14 @@ Iᴅ = <code>{}</code>
 Tᴏᴛᴀʟ Mᴇᴍʙᴇʀs = <code>{}</code>
 Aᴅᴅᴇᴅ Bʏ - {}
 
-Bʏ @Mr_Movies_Clone_Bot"""
+Bʏ @Movies_File_Search_Bot"""
 
     LOG_TEXT_P = """#NewUser
     
 Iᴅ - <code>{}</code>
 Nᴀᴍᴇ - {}
 
-Bʏ @Mr_Movies_Clone_Bot"""
+Bʏ @Movies_File_Search_Bot"""
 
     ALRT_TXT = """Hᴇʟʟᴏ {},
 Tʜɪꜱ ɪꜱ ɴᴏᴛ ʏᴏᴜʀ ᴍᴏᴠɪᴇ ʀᴇǫᴜᴇꜱᴛ,
