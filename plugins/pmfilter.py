@@ -2048,11 +2048,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton("⟸ Bᴀᴄᴋ", callback_data="help"),
             InlineKeyboardButton("✆ Cᴏɴᴛᴀᴄᴛ ✆", user_id=1733124290)
         ]]
-        await client.edit_message_media(
-            query.message.chat.id, 
-            query.message.id, 
-            InputMediaPhoto(random.choice(PICS))
-        )
+        try:
+            await client.edit_message_media(
+                query.message.chat.id, 
+                query.message.id, 
+                InputMediaPhoto(random.choice(PICS))
+            )
+        except:
+            pass
         reply_markup = InlineKeyboardMarkup(btn)
         await query.message.edit_text(
             text=(script.FSUB_TXT),
