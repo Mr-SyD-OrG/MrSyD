@@ -1025,7 +1025,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             alert = alert.replace("\\n", "\n").replace("\\t", "\t")
             await query.answer(alert, show_alert=True)
         
-    if query.data.startswith("file"):
+    if query.data.startswith(("file", "msyd", "mrsyd")):
         clicked = query.from_user.id
         try:
             typed = query.from_user.id
@@ -2521,14 +2521,19 @@ async def auto_filter(client, msg, spoll=False):
     except Exception as e:
         ch_id = None
 
+    if ch_id:
+        pre = 'msyd' if settings['file_secure'] else 'mrsyd'
+    else:
+        pre = 'filep' if settings['file_secure'] else 'file'
+
     if settings["button"]:
-        btn = [[
-            InlineKeyboardButton(
-                text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
-                url=f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
-                callback_data=None if ch_id else f"{pre}#{f.file_id}"
+        #btn = [[
+          #  InlineKeyboardButton(
+            #    text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
+          #      url=f"https://t.me/{temp.U_NAME}?start=msyd{str(message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
+              #  callback_data=None if ch_id else f"{pre}#{f.file_id}"
             )
-        ] for f in files]
+      #  ] for f in files]
       #  btn = [
             #[
               #  InlineKeyboardButton(
@@ -2543,14 +2548,14 @@ async def auto_filter(client, msg, spoll=False):
         #    for f in files
       #  ]
 
-     #   btn = [
-          #  [
-               # InlineKeyboardButton(
-                 #   text=f"📁 {get_size(file.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}", callback_data=f'{pre}#{file.file_id}'
-              #  ),
-            #]
-          #  for file in files
-     #   ]
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"📁 {get_size(file.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}", callback_data=f'{pre}#{file.file_id}'
+                ),
+            ]
+            for file in files
+        ]
         btn.insert(0, 
             [
                 InlineKeyboardButton("⇈ ꜱᴇʟᴇᴄᴛ ᴏᴘᴛɪᴏɴꜱ ʜᴇʀᴇ ⇈", 'reqinfo')
