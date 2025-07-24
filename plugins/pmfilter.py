@@ -139,20 +139,23 @@ async def next_page(bot, query):
 
     if not files:
         return
+    try:
+        ch_id = await force_db.get_channel_id(query.message.chat.id)
+    except Exception as e:
+        ch_id = None
+
     temp.GETALL[key] = files
     temp.SHORT[query.from_user.id] = query.message.chat.id
     settings = await get_settings(query.message.chat.id)
     pre = 'filep' if settings['file_secure'] else 'file'
     if settings['button']:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"📁 {get_size(file.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}", callback_data=f'{pre}#{file.file_id}'
-                ),
-            ]
-            for file in files
-        ]
-
+        btn = [[
+            InlineKeyboardButton(
+                text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
+                url=f"https://t.me/{temp.U_NAME}?start=msyd{str(query.message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
+                callback_data=None if ch_id else f"{pre}#{f.file_id}"
+            )
+        ] for f in files]
 
         btn.insert(0, 
             [
@@ -380,18 +383,22 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
     if not files:
         await query.answer("🚫 ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ 🚫 ʀᴇᴩᴏʀᴛ ᴛᴏ ᴛɢᴇ ᴀᴅᴍɪɴ.. 💥", show_alert=1)
         return
+    try:
+        ch_id = await force_db.get_channel_id(query.message.chat.id)
+    except Exception as e:
+        ch_id = None
     temp.GETALL[key] = files
     settings = await get_settings(message.chat.id)
     pre = 'filep' if settings['file_secure'] else 'file'
     if settings["button"]:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"📁 {get_size(file.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}", callback_data=f'{pre}#{file.file_id}'
-                ),
-            ]
-            for file in files
-        ]
+        btn = [[
+            InlineKeyboardButton(
+                text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
+                url=f"https://t.me/{temp.U_NAME}?start=msyd{str(query.message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
+                callback_data=None if ch_id else f"{pre}#{f.file_id}"
+            )
+        ] for f in files]
+        
         btn.insert(0, 
             [
                 InlineKeyboardButton("⇈ ꜱᴇʟᴇᴄᴛ ᴏᴘᴛɪᴏɴꜱ ʜᴇʀᴇ ⇈", 'reqinfo')
@@ -543,18 +550,22 @@ async def filter_languages_cb_handler(client: Client, query: CallbackQuery):
     if not files:
         await query.answer("🚫Sᴏʀʀʏ ɴᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ 🚫 ʀᴇᴩᴏʀᴛ ᴛᴏ ᴛʜᴇ ᴏᴡɴᴇʀ..ɪᴍᴍᴇᴅɪᴀᴛᴇʟʏ.. 💥", show_alert=1)
         return
+    try:
+        ch_id = await force_db.get_channel_id(query.message.chat.id)
+    except Exception as e:
+        ch_id = None
     temp.GETALL[key] = files
     settings = await get_settings(message.chat.id)
     pre = 'filep' if settings['file_secure'] else 'file'
     if settings["button"]:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"📁 {get_size(file.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}", callback_data=f'{pre}#{file.file_id}'
-                ),
-            ]
-            for file in files
-        ]
+        btn = [[
+            InlineKeyboardButton(
+                text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
+                url=f"https://t.me/{temp.U_NAME}?start=msyd{str(query.message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
+                callback_data=None if ch_id else f"{pre}#{f.file_id}"
+            )
+        ] for f in files]
+        
         btn.insert(0, 
             [
                 InlineKeyboardButton("⇈ ꜱᴇʟᴇᴄᴛ ᴏᴘᴛɪᴏɴꜱ ʜᴇʀᴇ ⇈", 'reqinfo')
@@ -737,17 +748,20 @@ async def filter_seasons_cb_handler(client: Client, query: CallbackQuery):
         await query.answer("🚫 Nᴏ ꜰɪʟᴇꜱ ᴡᴇʀᴇ ꜰᴏᴜɴᴅ 🚫 Rᴇᴩᴏʀᴛ ᴛᴏ ᴏᴡɴᴇʀ ᴩʟᴇᴀꜱᴇ.. ⚡", show_alert=1)
         return
     temp.GETALL[key] = files
+    try:
+        ch_id = await force_db.get_channel_id(query.message.chat.id)
+    except Exception as e:
+        ch_id = None
     settings = await get_settings(message.chat.id)
     pre = 'filep' if settings['file_secure'] else 'file'
     if settings["button"]:
-        btn = [
-            [
-                InlineKeyboardButton(
-                    text=f"📁 {get_size(file.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@') and not x.startswith('www.'), file.file_name.split()))}", callback_data=f'{pre}#{file.file_id}'
-                ),
-            ]
-            for file in files
-        ]
+        btn = [[
+            InlineKeyboardButton(
+                text=f"📁 {get_size(f.file_size)} ▷ {' '.join(filter(lambda x: not x.startswith(('[' ,'@', 'www.')), f.file_name.split()))}",
+                url=f"https://t.me/{temp.U_NAME}?start=msyd{str(query.message.chat.id).removeprefix('-100')}_{f.file_id}" if ch_id else None,
+                callback_data=None if ch_id else f"{pre}#{f.file_id}"
+            )
+        ] for f in files]
         btn.insert(0, [
             InlineKeyboardButton("Sᴇɴᴅ ᴀʟʟ", callback_data=f"sendfiles#{key}"),
             InlineKeyboardButton("Sᴇʟᴇᴄᴛ ᴀɢᴀɪɴ", callback_data=f"seasons#{key}")
