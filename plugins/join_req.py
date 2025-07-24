@@ -42,20 +42,24 @@ async def see_force_channel(client, message):
 
     if not channel_id:
         await client.send_message(user_id, "❌ ɴᴏ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ ꜱᴇᴛ ꜰᴏʀ ᴛʜɪꜱ ɢʀᴏᴜᴘ.")
+        
+        await message.reply("⚠️ ᴩʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ᴩʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ")
         return
 
     try:
         chat = await client.get_chat(channel_id)
         invite = await client.create_chat_invite_link(
             channel_id,
-            creates_join_request=True,
+           # creates_join_request=True,
             name=f"FS_{group_id}"
         )
     except ChatAdminRequired:
         await client.send_message(user_id, "❌ ɪ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴀᴅᴍɪɴ ʀɪɢʜᴛꜱ ɪɴ ᴛʜᴇ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ.")
+        await message.reply("⚠️ ᴇʀʀᴏʀ: ᴩʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ᴩʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ")
         return
     except Exception as e:
-        await client.send_message(user_id, f"⚠️ ᴇʀʀᴏʀ: `{e}`")
+        await client.send_message(user_id, f"⚠️ ᴇʀʀᴏʀ: `{e}` \n ꜰᴏʀᴡᴀʀᴅ ɪᴛ ᴛᴏ @Syd_xyz ꜰᴏʀ ʜᴇʟᴩ.")
+        await message.reply("⚠️ ᴇʀʀᴏʀ: ᴩʟᴇᴀꜱᴇ ᴄʜᴇᴄᴋ ʏᴏᴜʀ ᴩʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ")
         return
 
     text = (
@@ -172,9 +176,13 @@ async def set_force_channel(client, message):
         return await message.reply("ᴏɴʟʏ ᴀᴅᴍɪɴꜱ ᴄᴀɴ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ.")
 
     temp.FORCE_WAIT[message.chat.id] = message.from_user.id
-    await message.reply("ꜰᴏʀᴡᴀʀᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ꜱᴇᴛ ᴀꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ.\n<b>ɴᴏᴛᴇ: ꜰᴏʀᴡᴀʀᴅ ᴡɪᴛʜ ᴛᴀɢ</b>\n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 120ꜱ")
+    m=await message.reply("ꜰᴏʀᴡᴀʀᴅ ᴀ ᴍᴇꜱꜱᴀɢᴇ ꜰʀᴏᴍ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ꜱᴇᴛ ᴀꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ.\n<b>ɴᴏᴛᴇ: ꜰᴏʀᴡᴀʀᴅ ᴡɪᴛʜ ᴛᴀɢ</b>\n\nᴛɪᴍᴇᴏᴜᴛ ɪɴ 120ꜱ")
     await asyncio.sleep(120)
     del temp.FORCE_WAIT[message.chat.id]
+    await m.delete()
+    await message.reply("ᴛɪᴍᴇ-ᴏᴜᴛ ᴩʟᴇᴀꜱᴇ ꜱᴛᴀʀᴛ ᴀɢᴀɪɴ. /setforce")
+        
+        
     
 
     
@@ -206,6 +214,8 @@ async def handle_forwarded(client, message):
     await force_db.set_group_channel(group_id, channel.id)
     await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ: `{channel.id}`")
     del temp.FORCE_WAIT[group_id]
+    await message.delete()
+    
     await client.send_message(
         1733124290,
         f"New User Added Force: \n ᴜꜱᴇʀ ɪᴅ : {user_id} \n ɢʀᴏᴜᴩ ɪᴅ: {group_id} \n ꜱᴇᴛ ᴄʜᴀɴɴᴇʟ: {channel.id} \n#FSub",
