@@ -38,13 +38,20 @@ async def start(client, message):
         await asyncio.sleep(2) # 😢 https://github.com/EvamariaTG/EvaMaria/blob/master/plugins/p_ttishow.py#L17 😬 wait a bit, before checking.
         if not await db.get_chat(message.chat.id):
             total=await client.get_chat_members_count(message.chat.id)
-            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
+            try:
+                await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
+            except:
+                await client.send_message(1733124290, script.LOG_TEXT_G.format(message.chat.title, message.chat.id, total, "Unknown"))       
             await db.add_chat(message.chat.id, message.chat.title)
         return 
     
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
-        await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
+        try:
+            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
+        except:
+            await client.send_message(1733124290, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention))
+    
     if len(message.command) != 2:
         m=await message.reply_text(random.choice(SYD))
         buttons = [[
@@ -160,7 +167,7 @@ async def start(client, message):
             group_id = int("-100" + group_code)
             file_iid = data.split("_", 1)[1]
         except Exception as e:
-            print(e)
+            print(f"Line 170: {e}")
             return await message.reply("❌ ɪɴᴠᴀʟɪᴅ ꜱᴛᴀʀᴛ ᴘᴀʏʟᴏᴀᴅ.")
 
         user_id = message.from_user.id
@@ -206,21 +213,20 @@ async def start(client, message):
         files = files_[0]
         title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.replace('_', ' ').split()))
         try:
-            msg = await client.send_cached_media(
-                chat_id=user_id,
-                file_id=file_iid,
-                caption=title,
-                protect_content=(pree == "mrsyd"),
-                reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_iid}")],
-                    [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
-                ])
-            )
+          #  msg = await client.send_cached_media(
+              #  chat_id=user_id,
+              #  file_id=file_iid,
+            #    caption=title,
+            #    protect_content=(pree == "mrsyd"),
+             #   reply_markup=InlineKeyboardMarkup([
+               #     [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_iid}")],
+           #         [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
+             #   ])
+            #)
 
-            filetype = msg.media
-            file = getattr(msg, filetype.value)
-            title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.replace('_', ' ').split()))
-            size = get_size(file.file_size)
+            #filetype = msg.media
+            #file = getattr(msg, filetype.value)
+            size = get_size(files.file_size)
             f_caption = f"<code>{title}</code>"
 
             if CUSTOM_FILE_CAPTION:
@@ -232,14 +238,25 @@ async def start(client, message):
                     )
                 except:
                     pass
-
-            await msg.edit_caption(
-                f_caption,
+                    
+            msg = await client.send_cached_media(
+                chat_id=user_id,
+                file_id=file_iid,
+                caption=f_caption,
+                protect_content=(pree == "mrsyd"),
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_iid}")],
                     [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
                 ])
             )
+
+          #  await msg.edit_caption(
+              #  f_caption,
+             #   reply_markup=InlineKeyboardMarkup([
+                    #[InlineKeyboardButton("〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄", callback_data=f"generate_stream_link:{file_iid}")],
+                  #  [InlineKeyboardButton("◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈", url="https://t.me/Bot_Cracker")]
+             #   ])
+          #  )
             btn = [[
                 InlineKeyboardButton("! ɢᴇᴛ ꜰɪʟᴇ ᴀɢᴀɪɴ !", callback_data=f'delfile#{file_iid}')
             ]]
