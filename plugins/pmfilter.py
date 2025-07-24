@@ -2522,7 +2522,7 @@ async def auto_filter(client, msg, spoll=False):
         ch_id = None
 
     if ch_id:
-        pre = f"msyd{str(message.chat.id).removeprefix('-100')}" if settings['file_secure'] else f"mrsyd{str(message.chat.id).removeprefix('-100')}"
+        pre = f"msyd{str(message.chat.id).removeprefix('-100')}" #if settings['file_secure'] else f"mrsyd{str(message.chat.id).removeprefix('-100')}"
     else:
         pre = 'filep' if settings['file_secure'] else 'file'
 
