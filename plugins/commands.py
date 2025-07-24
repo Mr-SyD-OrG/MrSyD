@@ -159,7 +159,8 @@ async def start(client, message):
             group_code = data[4:14]  # 8-digit group ID without -100
             group_id = int("-100" + group_code)
             file_iid = data.split("_", 1)[1]
-        except Exception:
+        except Exception as e:
+            print(e)
             return await message.reply("❌ ɪɴᴠᴀʟɪᴅ ꜱᴛᴀʀᴛ ᴘᴀʏʟᴏᴀᴅ.")
 
         user_id = message.from_user.id
