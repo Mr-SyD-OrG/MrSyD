@@ -1,5 +1,5 @@
 from pyrogram import Client, filters, enums
-from pyrogram.types import ChatJoinRequest, Message
+from pyrogram.types import ChatJoinRequest, Message, InlineKeyboardMarkup, InlineKeyboardButton
 from database.users_chats_db import db
 from info import ADMINS, SYD_URI, SYD_NAME, AUTH_CHANNEL
 from motor.motor_asyncio import AsyncIOMotorClient
