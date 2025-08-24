@@ -17,7 +17,7 @@ import asyncio
 async def notify_setters(client, group_id: int, txt: str):
     # get setter list from DB
     setters = await force_db.get_setters(group_id)
-    text = txt + "Mᴇꜱꜱᴀɢᴇ ᴀᴛ @Syd_Xyz ꜰᴏʀ ʜᴇʟᴩ"
+    text = txt + "\n\nMᴇꜱꜱᴀɢᴇ ᴀᴛ @Syd_Xyz ꜰᴏʀ ʜᴇʟᴩ 🍀"
     for user_id in setters:
         try:
             await client.send_message(user_id, text)
