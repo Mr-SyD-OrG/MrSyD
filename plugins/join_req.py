@@ -10,7 +10,7 @@ from pyrogram.errors import UserNotParticipant
 from utils import temp
 
 
-from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked
+from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked, ChannelPrivate
 import asyncio
 
 
@@ -202,6 +202,9 @@ async def is_rq_subscribed(bot, query, group_id):
     except UserNotParticipant:
         return False
     except PeerIdInvalid:
+        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ: ɪ ʜᴀᴠᴇ ʟᴏꜱᴛ ᴄᴏɴᴛᴀᴄᴛ ᴡɪᴛʜ ʏᴏᴜʀ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ, ᴩʟᴇᴀꜱᴇ ʀᴇ-ᴀᴅᴅ ᴍᴇ. ꜱᴛɪʟʟ ɪꜰ ɪᴛ ɪꜱɴᴛ ʀᴇꜱᴏʟᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇ ꜰᴏʀ ʜᴇʟᴩ ❄️")
+        return True
+    except ChannelPrivate:
         await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ: ɪ ʜᴀᴠᴇ ʟᴏꜱᴛ ᴄᴏɴᴛᴀᴄᴛ ᴡɪᴛʜ ʏᴏᴜʀ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ, ᴩʟᴇᴀꜱᴇ ʀᴇ-ᴀᴅᴅ ᴍᴇ. ꜱᴛɪʟʟ ɪꜰ ɪᴛ ɪꜱɴᴛ ʀᴇꜱᴏʟᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇ ꜰᴏʀ ʜᴇʟᴩ ❄️")
         return True
     except Exception as e:
