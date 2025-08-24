@@ -201,9 +201,13 @@ async def is_rq_subscribed(bot, query, group_id):
         user = await bot.get_chat_member(channel_id, user_id)
     except UserNotParticipant:
         return False
+    except PeerIdInvalid:
+        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ: ɪ ʜᴀᴠᴇ ʟᴏꜱᴛ ᴄᴏɴᴛᴀᴄᴛ ᴡɪᴛʜ ʏᴏᴜʀ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ. ᴩʟᴇᴀꜱᴇ ʀᴇ-ᴀᴅᴅ ᴍᴇ ᴇᴠᴇɴ ɪꜰ ɪᴛ ɪꜱɴᴛ ʀᴇꜱᴏʟᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇ ꜰᴏʀ ʜᴇʟᴩ ❄️", force_db)
+        return True
     except Exception as e:
         logger.exception(e)
-        return False
+        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ:" + e, force_db)
+        return True
     else:
         if user.status != enums.ChatMemberStatus.BANNED:
             return True
