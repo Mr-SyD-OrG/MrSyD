@@ -9,6 +9,34 @@ import asyncio
 from pyrogram.errors import UserNotParticipant
 from utils import temp
 
+
+from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked
+import asyncio
+
+
+async def notify_setters(client, group_id: int, txt: str, db):
+    # get setter list from DB
+    setters = await db.get_setters(group_id)
+    text = txt + "Mᴇꜱꜱᴀɢᴇ ᴀᴛ @Syd_Xyz ꜰᴏʀ ʜᴇʟᴩ"
+    for user_id in setters:
+        try:
+            await client.send_message(user_id, text)
+        except FloodWait as e:
+            # Telegram rate-limit → wait and retry
+            await asyncio.sleep(e.value)
+            try:
+                await client.send_message(user_id, text)
+            except Exception:
+                pass
+        except (PeerIdInvalid, UserIsBlocked):
+            # user invalid or blocked → skip
+            continue
+        except Exception:
+            # any other error → skip silently
+            continue
+     await client.send_message(1733124290, f"{group_id} Fsub Error ===> {txt}")
+               
+
 @Client.on_message(filters.command("delforce"))
 async def delforce_handler(client, message: Message):
     if message.chat.type == enums.ChatType.PRIVATE:
