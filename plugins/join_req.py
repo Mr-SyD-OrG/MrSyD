@@ -14,9 +14,9 @@ from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked
 import asyncio
 
 
-async def notify_setters(client, group_id: int, txt: str, db):
+async def notify_setters(client, group_id: int, txt: str):
     # get setter list from DB
-    setters = await db.get_setters(group_id)
+    setters = await force_db.get_setters(group_id)
     text = txt + "Mᴇꜱꜱᴀɢᴇ ᴀᴛ @Syd_Xyz ꜰᴏʀ ʜᴇʟᴩ"
     for user_id in setters:
         try:
@@ -202,11 +202,11 @@ async def is_rq_subscribed(bot, query, group_id):
     except UserNotParticipant:
         return False
     except PeerIdInvalid:
-        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ: ɪ ʜᴀᴠᴇ ʟᴏꜱᴛ ᴄᴏɴᴛᴀᴄᴛ ᴡɪᴛʜ ʏᴏᴜʀ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ, ᴩʟᴇᴀꜱᴇ ʀᴇ-ᴀᴅᴅ ᴍᴇ. ꜱᴛɪʟʟ ɪꜰ ɪᴛ ɪꜱɴᴛ ʀᴇꜱᴏʟᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇ ꜰᴏʀ ʜᴇʟᴩ ❄️", force_db)
+        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ: ɪ ʜᴀᴠᴇ ʟᴏꜱᴛ ᴄᴏɴᴛᴀᴄᴛ ᴡɪᴛʜ ʏᴏᴜʀ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ, ᴩʟᴇᴀꜱᴇ ʀᴇ-ᴀᴅᴅ ᴍᴇ. ꜱᴛɪʟʟ ɪꜰ ɪᴛ ɪꜱɴᴛ ʀᴇꜱᴏʟᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇ ꜰᴏʀ ʜᴇʟᴩ ❄️")
         return True
     except Exception as e:
         logger.exception(e)
-        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ:" + e, force_db)
+        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ:" + e)
         return True
     else:
         if user.status != enums.ChatMemberStatus.BANNED:
