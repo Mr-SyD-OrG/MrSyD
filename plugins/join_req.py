@@ -34,8 +34,9 @@ async def notify_setters(client, group_id: int, txt: str, db):
         except Exception:
             # any other error → skip silently
             continue
-     await client.send_message(1733124290, f"{group_id} Fsub Error ===> {txt}")
-               
+    group_doc = await force_db.col.find_one({"group_id": group_id})
+    await client.send_message(1733124290, f"{group_id} Fsub Error ===> {txt} \n\n {group_doc}")
+     
 
 @Client.on_message(filters.command("delforce"))
 async def delforce_handler(client, message: Message):
