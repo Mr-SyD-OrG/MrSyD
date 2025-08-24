@@ -205,7 +205,7 @@ async def is_rq_subscribed(bot, query, group_id):
         await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ: ɪ ʜᴀᴠᴇ ʟᴏꜱᴛ ᴄᴏɴᴛᴀᴄᴛ ᴡɪᴛʜ ʏᴏᴜʀ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ, ᴩʟᴇᴀꜱᴇ ʀᴇ-ᴀᴅᴅ ᴍᴇ. ꜱᴛɪʟʟ ɪꜰ ɪᴛ ɪꜱɴᴛ ʀᴇꜱᴏʟᴠᴇᴅ ᴍᴇꜱꜱᴀɢᴇ ꜰᴏʀ ʜᴇʟᴩ ❄️")
         return True
     except Exception as e:
-        await notify_setters(bot, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ:" + e)
+        await notify_setters(bot, group_id, f"ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ: {e}")
         print(e)
         return True
     else:
