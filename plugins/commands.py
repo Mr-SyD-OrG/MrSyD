@@ -202,6 +202,7 @@ async def start(client, message):
                     print(f"No F For {group_id}")
             except Exception as e:
                 print(f"{group_id} Fsub Error ===> {e}")
+                await notify_setters(client, group_id, "ᴇʀʀᴏʀ ɪɴ ꜰꜱᴜʙ:" + e, force_db)
                 await client.send_message(1733124290, f"{group_id} Fsub Error ===> {e}")
                 pass
 
