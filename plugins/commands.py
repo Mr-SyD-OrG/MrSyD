@@ -1,7 +1,7 @@
 import os
 import logging
 import random
-from .join_req import force_db, is_rq_subscribed
+from .join_req import force_db, is_rq_subscribed, notify_setters
 import asyncio
 import pytz, string
 from Script import script
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 TIMEZONE = "Asia/Kolkata"
 BATCH_FILES = {}
-SYD = ["😶‍🌫️", "🥶", "🍀", "🌴", "🍀", "🕸", "❄️", "⛈️"]
+SYD = ["😶‍🌫️", "🥶", "🍀", "🌴", "🍀", "🕸", "❄️", "⛈️", "💡"]
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
