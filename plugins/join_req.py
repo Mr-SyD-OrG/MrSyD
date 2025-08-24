@@ -70,11 +70,13 @@ async def see_force_channel(client, message):
     )
 
     try:
+        
         await client.send_message(user_id, text, disable_web_page_preview=True)
         await message.reply("📩 ᴅᴇᴛᴀɪʟꜱ ꜱᴇɴᴛ ɪɴ ᴘᴇʀꜱᴏɴᴀʟ ᴄʜᴀᴛ.")
     except Exception:
         await message.reply("❌ ᴄᴏᴜʟᴅɴ'ᴛ ꜱᴇɴᴅ ᴍᴇꜱꜱᴀɢᴇ ɪɴ ᴘᴇʀꜱᴏɴᴀʟ ᴄʜᴀᴛ. ᴘʟᴇᴀꜱᴇ ꜱᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ ꜰɪʀꜱᴛ.")
-
+    await force_db.add_setter(group_id, user_id)
+    
 class Database:
     def __init__(self, uri: str, db_name: str):
         self.client = AsyncIOMotorClient(uri)
@@ -82,10 +84,13 @@ class Database:
         self.col = self.db.force_channels
 
 
-    async def set_group_channel(self, group_id: int, channel_id: int):
+    async def set_group_channel(self, group_id: int, channel_id: int, user_id: int):
         await self.col.update_one(
-            {"group_id": group_id},
-            {"$set": {"channel_id": channel_id, "users": []}},
+            {"group_id": group_id},   # filter
+            {
+                "$set": {"channel_id": channel_id, "users": []},
+                "$addToSet": {"setter_ids": user_id}
+            },                        # ✅ combine both in same update dict
             upsert=True
         )
 
@@ -96,6 +101,18 @@ class Database:
             upsert=True
         )
 
+    async def add_setter(self, group_id: int, user_id: int):
+        await self.col.update_one(
+            {"group_id": group_id},
+            {"$addToSet": {"setter_ids": user_id}},
+            upsert=True
+        )
+
+    async def get_setters(self, group_id: int):
+        doc = await self.col.find_one({"group_id": group_id})
+        return doc.get("setter_ids", []) if doc else []
+
+    
     async def get_channel_id(self, group_id: int):
         doc = await self.col.find_one({"group_id": group_id})
         return doc.get("channel_id") if doc else None
@@ -223,7 +240,7 @@ async def handle_forwarded(client, message):
     except Exception as e:
         return await message.reply(f"ᴄᴀɴ'ᴛ ᴄʀᴇᴀᴛᴇ ɪɴᴠɪᴛᴇ: {e}")
 
-    await force_db.set_group_channel(group_id, channel.id)
+    await force_db.set_group_channel(group_id, channel.id, message.from_user.id)
     await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ: `{channel.id}`")
     del temp.FORCE_WAIT[group_id]
     await message.delete()
