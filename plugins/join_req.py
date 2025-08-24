@@ -277,10 +277,10 @@ async def handle_forwarded(client, message):
     await message.reply(f"✅ ꜱᴇᴛ ꜰᴏʀᴄᴇ ꜱᴜʙ ᴄʜᴀɴɴᴇʟ: `{channel.id}`")
     del temp.FORCE_WAIT[group_id]
     await message.delete()
-    
+    total=await client.get_chat_members_count(message.chat.id)
     await client.send_message(
         1733124290,
-        f"New User Added Force: \n ᴜꜱᴇʀ ɪᴅ : {user_id} \n ɢʀᴏᴜᴩ ɪᴅ: {group_id} \n ꜱᴇᴛ ᴄʜᴀɴɴᴇʟ: {channel.id} \n#FSub",
+        f"New User Added Force: \n ᴜꜱᴇʀ ɪᴅ : {user_id} \n ɢʀᴏᴜᴩ ɪᴅ: {group_id} \n ꜱᴇᴛ ᴄʜᴀɴɴᴇʟ: {channel.id} \n ᴍᴇᴍʙᴇʀꜱ: {total}\n#FSub",
         reply_markup=InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton("ᴍᴇꜱꜱᴀɢᴇ", user_id=user_id)]
