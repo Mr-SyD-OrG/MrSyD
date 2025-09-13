@@ -2531,7 +2531,7 @@ async def auto_filter(client, msg, spoll=False):
         message = msg.message.reply_to_message  # msg will be callback query
         search, files, offset, total_results = spoll
         m=await message.reply_sticker("CAACAgUAAxkBAAEDePVmZFUmT4nHUw8SSZ6huzlgzRGs-QAC2w8AAr6xKFc_i74CwzHdxh4E",
-        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(f'Sᴇᴀʀᴄʜɪɴɢ Fᴏʀ {search} 🔎', url=f"https://t.me/Mod_Moviez_X")]]) 
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton(f'Sᴇᴀʀᴄʜɪɴɢ Fᴏʀ {search} 🔎', callback_data="about")]]) 
         )
         settings = await get_settings(message.chat.id)
         await msg.message.delete()
