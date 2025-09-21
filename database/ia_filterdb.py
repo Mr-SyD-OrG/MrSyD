@@ -68,6 +68,48 @@ async def save_file(media):
 import re
 ADMIN_ID = 1733124290
 
+
+ORDINALS = {
+    "first": 1, "one": 1, "1st": 1,
+    "second": 2, "two": 2, "2nd": 2,
+    "third": 3, "three": 3, "3rd": 3,
+    "fourth": 4, "four": 4, "4th": 4,
+    "fifth": 5, "five": 5, "5th": 5,
+    "sixth": 6, "six": 6, "6th": 6,
+    "seventh": 7, "seven": 7, "7th": 7,
+    "eighth": 8, "eight": 8, "8th": 8,
+    "ninth": 9, "nine": 9, "9th": 9,
+    "tenth": 10, "ten": 10, "10th": 10,
+    # extend if needed
+}
+
+# Reverse map for expansion (1 → ["one", "first", "1st"])
+REVERSE_ORDINALS = {}
+for word, num in ORDINALS.items():
+    REVERSE_ORDINALS.setdefault(num, set()).add(word)
+
+
+def expand_numbers(query: str) -> list[str]:
+    """Expand number/ordinal words into multiple variants."""
+    tokens = query.lower().split()
+    variants = [[]]
+
+    for t in tokens:
+        if t in ORDINALS:
+            num = ORDINALS[t]
+            equivalents = REVERSE_ORDINALS[num] | {str(num)}
+            new_variants = []
+            for v in variants:
+                for eq in equivalents:
+                    new_variants.append(v + [eq])
+            variants = new_variants
+        else:
+            for v in variants:
+                v.append(t)
+
+    return [" ".join(v) for v in variants]
+
+
 LANG_MAP = {
     "english": ["eng"], "eng": ["english"],
     "hindi": ["hin"], "hin": ["hindi"],
@@ -116,6 +158,7 @@ LANG_MAP = {
     "latin": ["lat"], "lat": ["latin"]
 }
 
+
 def expand_language_variants(query: str) -> list[str]:
     """Expand query for language keywords and their equivalents."""
     variants = [query]
@@ -131,30 +174,6 @@ def expand_language_variants(query: str) -> list[str]:
                     variants.append(query_lower.replace(eq, lang))
     return variants
 
-def normalize_numbers(text: str) -> str:
-    """Replace ordinal words with digits."""
-    tokens = text.lower().split()
-    out = []
-    for t in tokens:
-        if t in ORDINALS:
-            out.append(str(ORDINALS[t]))
-        else:
-            out.append(t)
-    return " ".join(out)
-    
-ORDINALS = {
-    "first": 1, "one": 1, "1st": 1,
-    "second": 2, "two": 2, "2nd": 2,
-    "third": 3, "three": 3, "3rd": 3,
-    "fourth": 4, "four": 4, "4th": 4,
-    "fifth": 5, "five": 5, "5th": 5,
-    "sixth": 6, "six": 6, "6th": 6,
-    "seventh": 7, "seven": 7, "7th": 7,
-    "eighth": 8, "eight": 8, "8th": 8,
-    "ninth": 9, "nine": 9, "9th": 9,
-    "tenth": 10, "ten": 10, "10th": 10,
-    # extend if needed
-}
 
 async def get_search_results(client, chat_id, query, file_type=None, max_results=10, offset=0, filter=False):
     """For given query return (results, next_offset, total_results)"""
@@ -175,10 +194,11 @@ async def get_search_results(client, chat_id, query, file_type=None, max_results
                     max_results = int(MAX_B_TN)
 
         query = query.strip()
-        query = normalize_numbers(query)  # handle ordinals like "first" -> "1"
+
+        # Expand number/ordinal variants
+        search_variants = expand_numbers(query)
 
         # Generate base variants for season/episode
-        search_variants = [query]
         season_match = re.search(r"season\s*(\d+)", query, re.IGNORECASE)
         episode_match = re.search(r"episode\s*(\d+)", query, re.IGNORECASE)
 
