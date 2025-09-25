@@ -1426,6 +1426,58 @@ async def removetutorial(bot, message):
     await save_group_settings(grpid, 'is_tutorial', False)
     await reply.edit_text(f"<b>ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ʀᴇᴍᴏᴠᴇᴅ ᴛᴜᴛᴏʀɪᴀʟ ʟɪɴᴋ ✅</b>")
 
+
+import dateparser
+
+@Client.on_message(filters.command("addword") & filters.private)
+async def addword(client, message):
+    try:
+        text = message.text.split(" ", 1)[1]  # remove command
+    except IndexError:
+        return await message.reply("⚠️ Usage: /addword <words> expire: <YYYY-MM-DD HH:MM>")
+    
+    if " expire: " not in text.lower():
+        return await message.reply("⚠️ Usage: /addword <words> expire: <YYYY-MM-DD HH:MM>")
+
+    phrase_part, expire_part = text.lower().split(" expire: ", 1)
+    phrase = phrase_part.strip()
+    expire_text = expire_part.strip()
+    
+    result = await db.add_word(phrase, expire_text)
+    if result == "invalid_date":
+        await message.reply("⚠️ Invalid date format. Use YYYY-MM-DD HH:MM")
+    else:
+        await message.reply(f"✅ Word added: `{phrase}` (expires {expire_text})")
+
+
+@Client.on_message(filters.command("delword") & filters.private)
+async def delword(client, message):
+    if len(message.command) < 2:
+        return await message.reply("⚠️ Usage: /delword <word or phrase>")
+    
+    # Join all parts after the command as the word/phrase
+    word = " ".join(message.command[1:]).strip().lower()
+    
+    ok = await db.delete_word(word)
+    if ok:
+        await message.reply(f"🗑️ Deleted: `{word}`")
+    else:
+        await message.reply(f"⚠️ Not found: `{word}`")
+
+
+@Client.on_message(filters.command("listwords") & filters.private)
+async def listwords(client, message):
+    words = await db.get_all_words()
+    if not words:
+        return await message.reply("📭 No words stored.")
+    await message.reply("📌 Stored words:\n" + "\n".join(f"- `{w}`" for w in words))
+
+
+@Client.on_message(filters.command("clearwords") & filters.private)
+async def clearwords(client, message):
+    result = await db.words.delete_many({})
+    await message.reply(f"🗑️ All words deleted. Total removed: {result.deleted_count}")
+
 @Client.on_message(filters.command("restart") & filters.user(ADMINS))
 async def stop_button(bot, message):
     msg = await bot.send_message(text="<b><i>ʙᴏᴛ ɪꜱ ʀᴇꜱᴛᴀʀᴛɪɴɢ</i></b>", chat_id=message.chat.id)       
