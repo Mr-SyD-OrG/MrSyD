@@ -196,28 +196,48 @@ async def get_search_results(client, chat_id, query, file_type=None, max_results
         query = query.strip()
 
         # Expand number/ordinal variants
-        search_variants = expand_numbers(query)
+        season_match = re.search(r"\b(?:season\s*(\d{1,2})|s0*(\d{1,2}))\b", query, re.IGNORECASE)
+        # Episode detection
+        episode_match = re.search(r"\b(?:episode\s*(\d{1,3})|e[p]?0*(\d{1,3}))\b", query, re.IGNORECASE)
+        # Compact SxxEyy detection
+        compact_match = re.search(r"\bS0*(\d{1,2})[\s._-]*E[P]?0*(\d{1,3})\b", query, re.IGNORECASE)
 
-        # Generate base variants for season/episode
-        season_match = re.search(r"season\s*(\d+)", query, re.IGNORECASE)
-        episode_match = re.search(r"episode\s*(\d+)", query, re.IGNORECASE)
-
-        if season_match:
-            sn = int(season_match.group(1))
-            search_variants.append(re.sub(r"season\s*\d+", f"S{sn:02d}", query, flags=re.IGNORECASE))
-
-        if episode_match:
-            ep = int(episode_match.group(1))
-            search_variants.append(re.sub(r"episode\s*\d+", f"E{ep:02d}", query, flags=re.IGNORECASE))
-            search_variants.append(re.sub(r"episode\s*\d+", f"EP{ep}", query, flags=re.IGNORECASE))
-            search_variants.append(re.sub(r"episode\s*\d+", f"EP{ep:02d}", query, flags=re.IGNORECASE))
+        if compact_match:
+            sn, ep = int(compact_match.group(1)), int(compact_match.group(2))
+            search_variants.append(re.sub(compact_match.re, f"S{sn:02d}E{ep:02d}", query))
+            search_variants.append(re.sub(compact_match.re, f"S{sn}E{ep}", query))
+            search_variants.append(re.sub(compact_match.re, f"Season {sn} Episode {ep}", query))
 
         if season_match and episode_match:
-            sn = int(season_match.group(1))
-            ep = int(episode_match.group(1))
-            search_variants.append(
-                re.sub(r"season\s*\d+\s*episode\s*\d+", f"S{sn:02d}E{ep:02d}", query, flags=re.IGNORECASE)
-            )
+            sn = int(season_match.group(1) or season_match.group(2))
+            ep = int(episode_match.group(1) or episode_match.group(2))
+                
+                # Replace season and episode in the original query using spans
+            start, end = min(season_match.start(), episode_match.start()), max(season_match.end(), episode_match.end())
+            replaced = query[:start] + f"S{sn:02d}E{ep:02d}" + query[end:]
+            search_variants.append(replaced)
+            replaced2 = query[:start] + f"S{sn}E{ep}" + query[end:]
+            search_variants.append(replaced2)
+            replaced3 = query[:start] + f"Season {sn} Episode {ep}" + query[end:]
+            search_variants.append(replaced3)
+
+
+        if season_match:
+            sn = int(season_match.group(1) or season_match.group(2))
+            search_variants.append(re.sub(season_match.re, f"S{sn:02d}", query))
+            search_variants.append(re.sub(season_match.re, f"Season {sn}", query))
+
+        if episode_match:
+            ep = int(episode_match.group(1) or episode_match.group(2))
+            search_variants.append(re.sub(episode_match.re, f"E{ep:02d}", query))
+            search_variants.append(re.sub(episode_match.re, f"EP{ep}", query))
+            search_variants.append(re.sub(episode_match.re, f"Episode {ep}", query))
+            for syd in range(1, 9):  # for seasons 1 to 10
+                search_variants.append(re.sub(episode_match.re, f"S{syd:02d}E{ep:02d}", query))
+                search_variants.append(re.sub(episode_match.re, f"S{syd}E{ep}", query))
+
+        # Expand language keywords
+        search_variants.append(re.sub("&", "and", query))
 
         # Expand language keywords
         expanded_variants = []
