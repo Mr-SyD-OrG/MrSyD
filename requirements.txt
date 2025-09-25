@@ -12,6 +12,7 @@
  pytz 
  aiohttp==3.8.3
  googletrans==3.1.0a0
+ dateparser
 # pyrofork
 
 #---master---# 
