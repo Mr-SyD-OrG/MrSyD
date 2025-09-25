@@ -42,6 +42,7 @@ class Database:
         self.users = self.db.uersz
         self.req = self.db.requests
         self.syd = self.db.bots
+        self.words = self.db.words
         
     async def find_join_req(self, id):
         return bool(await self.req.find_one({'id': id}))
@@ -184,7 +185,41 @@ class Database:
    
     async def get_all_chats(self):
         return self.grp.find({})
-        
+
+    async def add_word(self, phrase: str, expire_text: str):
+        phrase = phrase.lower().strip()
+        expire_time = dateparser.parse(expire_text)
+        if not expire_time:
+            return "invalid_date"
+        await self.words.insert_one({
+            "word": phrase,
+            "expireAt": expire_time
+        })
+        return True
+
+    async def check_word_exists(self, text: str):
+        text = text.lower()
+        now = datetime.datetime.now(pytz.timezone("Asia/Kolkata")).replace(tzinfo=None)
+        cursor = self.words.find({})
+        async for doc in cursor:
+            # Remove expired word
+            
+            if "expireAt" in doc and doc["expireAt"] < now:
+                await self.words.delete_one({"word": doc["word"]})
+                continue
+            if doc["word"] in text:
+                return True
+        return False
+
+
+    async def get_all_words(self):
+        cursor = self.words.find({})
+        return [doc["word"] async for doc in cursor]
+
+    async def delete_word(self, word: str):
+        result = await self.words.delete_one({"word": word.lower().strip()})
+        return result.deleted_count > 0
+
     async def add_bot(self, user_id: int, bot_id: int, token, name, username):
        bot = await self.in_bot(user_id, bot_id)
        if bot:
