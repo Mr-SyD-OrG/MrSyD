@@ -195,7 +195,7 @@ async def get_search_results(client, chat_id, query, file_type=None, max_results
 
         query = query.strip()
 
-        # Expand number/ordinal variants
+        search_variants = expand_numbers(query)
         season_match = re.search(r"\b(?:season\s*(\d{1,2})|s0*(\d{1,2}))\b", query, re.IGNORECASE)
         # Episode detection
         episode_match = re.search(r"\b(?:episode\s*(\d{1,3})|e[p]?0*(\d{1,3}))\b", query, re.IGNORECASE)
