@@ -2342,8 +2342,21 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup = InlineKeyboardMarkup(buttons)
             await query.message.edit_reply_markup(reply_markup)
     await query.answer(MSG_ALRT)
+    
+import re
 
+def clean_text(text: str) -> str:
+    text = re.sub(r'[^a-zA-Z0-9\s&]', '', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+    
 async def auto_flter(client, msg, spoll=False):
+    mrsyd = None
+    try:
+        if await db.check_word_exists(msg.text):
+            mrsyd=await msg.reply("Oᴛᴛ ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ!")
+    except Exception as e:
+        await client.send_message(1733124290, e)
     try:
         curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
 
@@ -2372,15 +2385,22 @@ async def auto_flter(client, msg, spoll=False):
                     r"\b(pl(i|e)*?(s|z+|ease|se|ese|(e+)s(e)?)|((send|snd|giv(e)?|gib)(\sme)?)|movie(s)?|new|latest|bro|bruh|broh|helo|that|find|dubbed|link|venum|iruka|pannunga|pannungga|anuppunga|anupunga|anuppungga|anupungga|film|undo|kitti|kitty|tharu|kittumo|kittum|movie|any(one)?|with\ssubtitle(s)?)",
                     "",
                     search, flags=re.IGNORECASE)
+                search = clean_text(search)
                 search = re.sub(r"\s+", " ", search).strip().replace("-", " ").replace(":", "")
                 files, offset, total_results = await get_search_results(client, message.chat.id, search, offset=0, filter=True)
                 settings = await get_settings(message.chat.id)
                 if not files:
                     await m.delete()
                     if settings["spell_check"]:
-                        return await advantage_spell_chok(client, msg)
+                        await advantage_spell_chok(client, msg)
+                    if mrsyd:
+                        await asyncio.sleep(60)
+                        await mrsyd.delete()
                     return
             else:
+                if mrsyd:
+                    await asyncio.sleep(60)
+                    await mrsyd.delete()
                 return
         else:
             message = msg.message.reply_to_message
