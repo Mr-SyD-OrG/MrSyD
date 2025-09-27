@@ -148,7 +148,7 @@ async def next_page(bot, query):
     temp.SHORT[query.from_user.id] = query.message.chat.id
     settings = await get_settings(query.message.chat.id)
     if ch_id:
-        pre = f"msyd{str(message.chat.id).removeprefix('-100')}" #if settings['file_secure'] else f"mrsyd{str(message.chat.id).removeprefix('-100')}"
+        pre = f"msyd{str(query.message.chat.id).removeprefix('-100')}" #if settings['file_secure'] else f"mrsyd{str(message.chat.id).removeprefix('-100')}"
     else:
         pre = 'filep' if settings['file_secure'] else 'file'
 
@@ -395,7 +395,7 @@ async def filter_qualities_cb_handler(client: Client, query: CallbackQuery):
     temp.GETALL[key] = files
     settings = await get_settings(message.chat.id)
     if ch_id:
-        pre = f"msyd{str(message.chat.id).removeprefix('-100')}" #if settings['file_secure'] else f"mrsyd{str(message.chat.id).removeprefix('-100')}"
+        pre = f"msyd{str(query.message.chat.id).removeprefix('-100')}" #if settings['file_secure'] else f"mrsyd{str(message.chat.id).removeprefix('-100')}"
     else:
         pre = 'filep' if settings['file_secure'] else 'file'
 
