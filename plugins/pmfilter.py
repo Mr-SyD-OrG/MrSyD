@@ -2353,7 +2353,7 @@ def clean_text(text: str) -> str:
 async def auto_flter(client, msg, spoll=False):
     mrsyd = None
     try:
-        if await db.check_word_exists(msg.text):
+        if await db.check_word_exists(msg.text or (msg.message.reply_to_message.text if msg.message and msg.message.reply_to_message else None)):
             mrsyd=await msg.reply("Oᴛᴛ ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ!")
     except Exception as e:
         await client.send_message(1733124290, e)
@@ -2506,6 +2506,13 @@ async def auto_flter(client, msg, spoll=False):
 
 
 async def auto_filter(client, msg, spoll=False):
+    sydm=await msg.reply("Sᴇᴀʀᴄʜɪɴɢ!")
+    mrsyd = None
+    try:
+        if await db.check_word_exists(msg.text or (msg.message.reply_to_message.text if msg.message and msg.message.reply_to_message else None)):
+            mrsyd=await msg.reply("Oᴛᴛ ɴᴏᴛ ʀᴇʟᴇᴀꜱᴇᴅ!")
+    except Exception as e:
+        await client.send_message(1733124290, e)
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
     # reqstr1 = msg.from_user.id if msg.from_user else 0
     # reqstr = await client.get_users(reqstr1)
@@ -2677,7 +2684,7 @@ async def auto_filter(client, msg, spoll=False):
     if syd:
         await message.reply_text("404")
     else:
-        fuk = await message.reply_text(text=cap, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=True)
+        fuk = await sydm.edit(text=cap, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=True)
         await m.delete()
         try:
             if settings['auto_delete']:
@@ -2693,6 +2700,8 @@ async def auto_filter(client, msg, spoll=False):
             if mrsyd:
                 await mrsyd.delete()
             await message.delete()
+     if sydm.text == "Sᴇᴀʀᴄʜɪɴɢ!":
+         await sydm.delete()
             
 async def auto_fter(client, msg, spoll=False):
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
