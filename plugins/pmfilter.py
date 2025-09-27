@@ -2545,12 +2545,10 @@ async def auto_filter(client, msg, spoll=False):
             files, offset, total_results = await get_search_results(client, message.chat.id ,search, offset=0, filter=True)
             settings = await get_settings(message.chat.id)
             if not files:
-                await m.delete()
+                await sydm.delete()
                 if settings["spell_check"]:
-                    await sydm.delete()
                     return await advantage_spell_chok(client, msg)
                 else:
-                    await sydm.delete()
                     # if NO_RESULTS_MSG:
                     #     await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, search)))
                     return
@@ -2687,7 +2685,7 @@ async def auto_filter(client, msg, spoll=False):
         await message.reply_text("404")
     else:
         fuk = await sydm.edit(text=cap, reply_markup=InlineKeyboardMarkup(btn), disable_web_page_preview=True)
-        await m.delete()
+        
         try:
             if settings['auto_delete']:
                 await asyncio.sleep(300)
