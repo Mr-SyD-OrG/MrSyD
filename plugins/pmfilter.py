@@ -2547,13 +2547,15 @@ async def auto_filter(client, msg, spoll=False):
             if not files:
                 await m.delete()
                 if settings["spell_check"]:
+                    await sydm.delete()
                     return await advantage_spell_chok(client, msg)
                 else:
-                    
+                    await sydm.delete()
                     # if NO_RESULTS_MSG:
                     #     await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, search)))
                     return
         else:
+            await sydm.delete()
             return
     else:
         message = msg.message.reply_to_message  # msg will be callback query
