@@ -2520,11 +2520,11 @@ async def auto_filter(client, msg, spoll=False):
     
     if not spoll:
         message = msg
-        if message.text.startswith("t.me/"): return
-        if message.text.startswith("https://"): return
-        if message.text.startswith("/"): return  # ignore
+        if message.text.startswith("t.me/"): return await sydm.delete()
+        if message.text.startswith("https://"): return await sydm.delete()
+        if message.text.startswith("/"): return await sydm.delete()  # ignore
         if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
-            return
+            return await sydm.delete()
         if len(message.text) < 100:
             search = message.text.strip().lower()
           #  m=await message.reply_sticker("CAACAgUAAxkBAAEDePVmZFUmT4nHUw8SSZ6huzlgzRGs-QAC2w8AAr6xKFc_i74CwzHdxh4E",
