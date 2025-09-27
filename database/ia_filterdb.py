@@ -264,8 +264,7 @@ async def get_search_results(client, chat_id, query, file_type=None, max_results
                 )
                 continue
 
-        if not regex_list:
-            return [], "", 0
+        
 
         #if USE_CAPTION_FILTER:
            # filter = {"$or": [{"file_name": {"$in": regex_list}}, {"caption": {"$in": regex_list}}]}
