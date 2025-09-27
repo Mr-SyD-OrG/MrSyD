@@ -2506,7 +2506,7 @@ async def auto_flter(client, msg, spoll=False):
 
 
 async def auto_filter(client, msg, spoll=False):
-    sydm=await msg.reply("Sᴇᴀʀᴄʜɪɴɢ!")
+    sydm=await msg.reply("Sᴇᴀʀᴄʜɪɴɢ!", quote=True)
     mrsyd = None
     try:
         if await db.check_word_exists(msg.text or (msg.message.reply_to_message.text if msg.message and msg.message.reply_to_message else None)):
