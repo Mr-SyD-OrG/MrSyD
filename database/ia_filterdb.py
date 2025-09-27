@@ -286,26 +286,26 @@ async def get_search_results(client, chat_id, query, file_type=None, max_results
 
        # return files, next_offset, total_results
                    # after building regex_list
-            if not regex_list:
-                return [], "", 0
+            # after building regex_list
+    
 
-            filter = {"file_name": {"$in": regex_list}}
-            if file_type:
-                filter["file_type"] = file_type
+        filter = {"file_name": {"$in": regex_list}}
+        if file_type:
+            filter["file_type"] = file_type
 
-            # get total matching results (can be slow for huge collection)
-            total_results = await Media.count_documents(filter)
+    # get total matching results (can be slow for huge collection)
+        total_results = await Media.count_documents(filter)
 
-            # fetch only what we need
-            cursor = Media.find(filter)
-            cursor.sort("$natural", -1)
-            cursor.skip(offset).limit(max_results)
-            files = await cursor.to_list(length=max_results)
+    # fetch only what we need
+        cursor = Media.find(filter)
+        cursor.sort("$natural", -1)
+        cursor.skip(offset).limit(max_results)
+        files = await cursor.to_list(length=max_results)
 
-            # calculate next offset (allowing total_results to exceed max_results)
-            next_offset = offset + max_results if (offset + max_results) < total_results else ""
+    # calculate next offset (allowing total_results to exceed max_results)
+        next_offset = offset + max_results if (offset + max_results) < total_results else ""
 
-            return files, next_offset, total_results
+        return files, next_offset, total_results
 
 
     except Exception as e:
