@@ -267,24 +267,46 @@ async def get_search_results(client, chat_id, query, file_type=None, max_results
         if not regex_list:
             return [], "", 0
 
-        if USE_CAPTION_FILTER:
-            filter = {"$or": [{"file_name": {"$in": regex_list}}, {"caption": {"$in": regex_list}}]}
-        else:
+        #if USE_CAPTION_FILTER:
+           # filter = {"$or": [{"file_name": {"$in": regex_list}}, {"caption": {"$in": regex_list}}]}
+       # else:
+           # filter = {"file_name": {"$in": regex_list}}
+
+       # if file_type:
+          #  filter["file_type"] = file_type
+
+       # cursor = Media.find(filter, {"file_name": 1, "caption": 1, "file_size": 1, "file_id": 1})
+        #cursor.sort("$natural", -1).skip(offset).limit(max_results + 1)
+      #  docs = await cursor.to_list(length=max_results + 1)
+
+       # files = docs[:max_results]
+       # next_offset = offset + max_results if len(docs) > max_results else ""
+       # total_results = offset + len(files)
+
+
+       # return files, next_offset, total_results
+                   # after building regex_list
+            if not regex_list:
+                return [], "", 0
+
             filter = {"file_name": {"$in": regex_list}}
+            if file_type:
+                filter["file_type"] = file_type
 
-        if file_type:
-            filter["file_type"] = file_type
+            # get total matching results (can be slow for huge collection)
+            total_results = await Media.count_documents(filter)
 
-        cursor = Media.find(filter, {"file_name": 1, "caption": 1, "file_size": 1, "file_id": 1})
-        cursor.sort("$natural", -1).skip(offset).limit(max_results + 1)
-        docs = await cursor.to_list(length=max_results + 1)
+            # fetch only what we need
+            cursor = Media.find(filter)
+            cursor.sort("$natural", -1)
+            cursor.skip(offset).limit(max_results)
+            files = await cursor.to_list(length=max_results)
 
-        files = docs[:max_results]
-        next_offset = offset + max_results if len(docs) > max_results else ""
-        total_results = offset + len(files)
+            # calculate next offset (allowing total_results to exceed max_results)
+            next_offset = offset + max_results if (offset + max_results) < total_results else ""
 
+            return files, next_offset, total_results
 
-        return files, next_offset, total_results
 
     except Exception as e:
         await client.send_message(
