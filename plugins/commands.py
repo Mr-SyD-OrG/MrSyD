@@ -7,7 +7,7 @@ import pytz, string
 from Script import script
 from datetime import datetime
 from pyrogram import Client, filters, enums
-from pyrogram.errors import ChatAdminRequired, FloodWait
+from pyrogram.errors import ChatAdminRequired, FloodWait, IndexError
 from pyrogram.types import *
 from urllib.parse import quote_plus
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
