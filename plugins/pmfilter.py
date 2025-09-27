@@ -2700,8 +2700,8 @@ async def auto_filter(client, msg, spoll=False):
             if mrsyd:
                 await mrsyd.delete()
             await message.delete()
-     if sydm.text == "Sᴇᴀʀᴄʜɪɴɢ!":
-         await sydm.delete()
+    if sydm.text == "Sᴇᴀʀᴄʜɪɴɢ!":
+        await sydm.delete()
             
 async def auto_fter(client, msg, spoll=False):
     curr_time = datetime.now(pytz.timezone('Asia/Kolkata')).time()
