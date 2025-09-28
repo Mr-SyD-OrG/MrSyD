@@ -75,7 +75,13 @@ async def get_shortlink(url):
 
 @Client.on_message(filters.group | filters.private & filters.text & filters.incoming)
 async def give_filter(client, message):
+    if re.search(r'(?im)(?:https?://|www\.|t\.me/|telegram\.dog/)\S+|@[a-z0-9_]{5,32}\b', message.text):
+        return
     if message.text.startswith("/"): return  
+    if message.text.startswith("t.me/"): return 
+    if message.text.startswith("https://"): return  # ignore
+    if re.findall("((^\/|^,|^!|^\.|^[\U0001F600-\U000E007F]).*)", message.text):
+            return
     if message.chat.id != SUPPORT_CHAT_ID:
         manual = await manual_filters(client, message)
         if manual == False:
@@ -2579,14 +2585,23 @@ async def auto_filter(client, msg, spoll=False):
             settings = await get_settings(message.chat.id)
             if not files:
                 await sydm.delete()
+                
                 if settings["spell_check"]:
-                    return await advantage_spell_chok(client, msg)
-                else:
+                    await advantage_spell_chok(client, msg)
+                    #return
+              #  else:
                     # if NO_RESULTS_MSG:
                     #     await client.send_message(chat_id=LOG_CHANNEL, text=(script.NORSLTS.format(reqstr.id, reqstr.mention, search)))
-                    return
+                  #  return
+                if mrsyd:
+                    await asyncio.sleep(60)
+                    await mrsyd.delete()
+                return
         else:
             await sydm.delete()
+            if mrsyd:
+                await asyncio.sleep(60)
+                await mrsyd.delete()
             return
     else:
         message = msg.message.reply_to_message  # msg will be callback query
