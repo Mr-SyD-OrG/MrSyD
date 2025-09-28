@@ -2581,6 +2581,7 @@ async def auto_filter(client, msg, spoll=False):
             #search = search.replace("-", " ")
            # search = search.replace(":","")
             search = clean_text(search)
+            if search.strip() == "": return await sydm.delete()
             files, offset, total_results = await get_search_results(client, message.chat.id ,search, offset=0, filter=True)
             settings = await get_settings(message.chat.id)
             if not files:
