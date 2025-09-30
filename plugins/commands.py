@@ -200,7 +200,7 @@ async def start(client, message):
                         reply_markup=InlineKeyboardMarkup(btn),
                         parse_mode=enums.ParseMode.HTML
                     )
-                    await db.store_file_id_if_not_subscribed(message.from_user.id, file_id, sydback.id)
+                    await db.store_file_id_if_not_subscribed(message.from_user.id, file_iid, sydback.id)
                     return
                 else:
                     print(f"No F For {group_id}")
