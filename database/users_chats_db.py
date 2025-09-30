@@ -41,6 +41,7 @@ class Database:
         self.grp = self.db.groups
         self.users = self.db.uersz
         self.req = self.db.requests
+        self.all = self.db.filed
         self.syd = self.db.bots
         self.words = self.db.words
         
