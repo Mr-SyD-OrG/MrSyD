@@ -313,7 +313,7 @@ async def start(client, message):
                 return
         except Exception as e:
             logger.error(f"Error in subscription check: {e}")
-            await client.send_message(chat_id=1733124290, text="FORCE  SUB  ERROR ......  CHECK LOGS")
+            await client.send_message(chat_id=1733124290, text=f"FORCE  SUB  ERROR ......  CHECK LOGS {e}")
 
     if data.split("-", 1)[0] == "SyD":
         user_id = int(data.split("-", 1)[1])
