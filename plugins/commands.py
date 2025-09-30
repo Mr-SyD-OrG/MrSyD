@@ -194,12 +194,13 @@ async def start(client, message):
                         [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={data}")]
                     ]
 
-                    await client.send_message(
+                    sydback = await client.send_message(
                         chat_id=user_id,
                         text="<b>Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ </b>ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.\n\n<b>*ɴᴏᴛᴇ: ᴛʜɪꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ ɪꜱ ɴᴏᴛ ꜱᴇᴛ ʙʏ ᴛʜᴇ  ʙᴏᴛ ᴏᴡɴᴇʀ, ɪᴛ ɪꜱ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʀᴇꜱᴩᴇᴄᴛɪᴠᴇ  ɢʀᴏᴜᴩ ᴀᴅᴍɪɴ.</b>",
                         reply_markup=InlineKeyboardMarkup(btn),
                         parse_mode=enums.ParseMode.HTML
                     )
+                    await db.store_file_id_if_not_subscribed(message.from_user.id, file_id, sydback.id)
                     return
                 else:
                     print(f"No F For {group_id}")
@@ -302,12 +303,13 @@ async def start(client, message):
                     except (IndexError, ValueError):
                         btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻", url=f"https://t.me/{temp.U_NAME}?start={message.command[1]}")])
 
-                await client.send_message(
+                sydback = await client.send_message(
                     chat_id=message.from_user.id,
                     text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
                     reply_markup=InlineKeyboardMarkup(btn),
                     parse_mode=enums.ParseMode.MARKDOWN
                 )
+                await db.store_file_id_if_not_subscribed(message.from_user.id, file_id, sydback.id)
                 return
         except Exception as e:
             logger.error(f"Error in subscription check: {e}")
