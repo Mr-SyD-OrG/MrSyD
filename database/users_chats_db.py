@@ -132,7 +132,7 @@ class Database:
     
 
     async def get_chat(self, chat):
-        chat = await selfrequests
+        chat = await self.grp.find_one({'id':int(chat)})
         d_one({'id':int(chat)})
         return False if not chat else chat.get('chat_status')
     
