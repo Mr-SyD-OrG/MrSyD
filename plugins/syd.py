@@ -15,12 +15,12 @@ logger.setLevel(logging.INFO)
 lock = asyncio.Lock()
 
 # Channel ID as an integer
-INDEX_CHANNEL = -1002498086501
+INDEX_CHANNEL = [-1002498086501, -1003164435604, -1002901811032, -1003183027276, -1003137700522]
 
 @Client.on_message(filters.document | filters.audio | filters.video)
 async def auto(bot, message):
     # Check if the message is from the specified channel
-    if message.chat.id == INDEX_CHANNEL:
+    if message.chat.id in INDEX_CHANNEL:
         # Log the received media for tracking purposes
         logger.info(f"Received {message.media.value} from {message.chat.title or message.chat.id}")
 
