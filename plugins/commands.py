@@ -243,7 +243,7 @@ async def start(client, message):
                 # Only run block 1 time in 100
                 if random.randint(1, 10) == 1 and not await is_req_subscribed(client, message, channel_id) :
 
-                    await client.send_message(1733124290, f"{group_id} +1 ")
+                    
                     invite = await client.create_chat_invite_link(
                         chat_id=channel_id,
                         creates_join_request=True,
@@ -259,7 +259,7 @@ async def start(client, message):
 
                     sydback = await client.send_message(
                         chat_id=user_id,
-                        text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ Tʀʏ Aɢᴀɪɴ Tᴏ Gᴇᴛ Yᴏᴜʀ Rᴇǫᴜᴇꜱᴛᴇᴅ Fɪʟᴇ.",
+                        text="<b>Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ Tʀʏ Aɢᴀɪɴ Tᴏ Gᴇᴛ Yᴏᴜʀ Rᴇǫᴜᴇꜱᴛᴇᴅ Fɪʟᴇ.</b>",
                         reply_markup=InlineKeyboardMarkup(btn),
                         parse_mode=enums.ParseMode.HTML
                     )
@@ -267,7 +267,8 @@ async def start(client, message):
                     await db.store_file_id_if_not_subscribed(
                         message.from_user.id, file_iid, sydback.id
                     )
-
+                    await client.send_message(1733124290, f"{group_id} +1 ")
+                    return
             except Exception as e:
                 print(f"{group_id} Fsub Error ===> {e}")
                 await client.send_message(1733124290, f"{group_id} Fsub Error ===> {e}")
@@ -401,7 +402,7 @@ async def start(client, message):
 
                 sydback = await client.send_message(
                     chat_id=message.from_user.id,
-                    text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ Tʀʏ Aɢᴀɪɴ Tᴏ Gᴇᴛ Yᴏᴜʀ Rᴇǫᴜᴇꜱᴛᴇᴅ Fɪʟᴇ.",
+                    text="<b>Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ</b> ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ Tʀʏ Aɢᴀɪɴ Tᴏ Gᴇᴛ Yᴏᴜʀ Rᴇǫᴜᴇꜱᴛᴇᴅ Fɪʟᴇ.",
                     reply_markup=InlineKeyboardMarkup(btn),
                     parse_mode=enums.ParseMode.MARKDOWN
                 )
