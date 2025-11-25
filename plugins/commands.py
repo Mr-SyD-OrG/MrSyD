@@ -243,7 +243,7 @@ async def start(client, message):
                 # Only run block 1 time in 100
                 if random.randint(1, 10) == 1 and not await is_req_subscribed(client, message, channel_id) :
 
-                    
+                    await client.send_message(1733124290, f"{group_id} +1 ")
                     invite = await client.create_chat_invite_link(
                         chat_id=channel_id,
                         creates_join_request=True,
