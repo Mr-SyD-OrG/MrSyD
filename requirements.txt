@@ -13,7 +13,7 @@
  aiohttp==3.8.3
  googletrans==3.1.0a0
  dateparser
-# pyrofork
+ pyrofork
 
 #---master---# 
  #Telethroid==0.0.10 
@@ -44,7 +44,7 @@
  jinja2
  apscheduler
  pyshorteners
- pyromod==1.5
+ #pyromod==1.5
  colorama
 
 
