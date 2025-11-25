@@ -25,6 +25,66 @@ TIMEZONE = "Asia/Kolkata"
 BATCH_FILES = {}
 SYD = ["😶‍🌫️", "🥶", "🍀", "🌴", "🍀", "🕸", "❄️", "⛈️", "💡"]
 
+@Client.on_callback_query(filters.regex(r"check_(.+)"))
+async def check_channel(client, query):
+
+    channel = query.matches[0].group(1)           # channel username/id from callback
+    user_id = query.from_user.id
+
+    # check subscription
+    ok = await is_req_subscribed(client, query, channel)
+
+    if ok:
+        await query.answer("ᴊᴏɪɴᴇᴅ !", show_alert=False)
+        await query.message.delete()
+        data = await db.get_stored_file_id(user_id)
+        if not data:
+            try:
+                await client.send_message(
+                    user_id,
+                    "<b>ᴛʜᴀɴᴋꜱ ғᴏʀ ᴊᴏɪɴɪɴɢ ! ʏᴏᴜ ᴄᴀɴ ɴᴏᴡ <u>ᴄᴏɴᴛɪɴᴜᴇ</u> ɪɴ ᴛʜᴇ ɢʀᴏᴜᴘ ⚡</b>"
+                )
+            except Exception:
+                pass
+            return
+
+        file_id = data["file_id"]
+        messyd = int(data["mess"])
+
+        # Try fetching old message
+        try:
+            syd = await client.get_messages(chat_id=user_id, message_ids=messyd)
+        except Exception:
+            syd = None
+     
+    
+        msg = await client.send_cached_media(
+            chat_id=message.from_user.id,
+            file_id=file_id,
+            reply_markup=InlineKeyboardMarkup(
+                [
+                 [
+                  InlineKeyboardButton('〄 Ғᴀꜱᴛ Dᴏᴡɴʟᴏᴀᴅ / Wᴀᴛᴄʜ Oɴʟɪɴᴇ 〄', callback_data=f'generate_stream_link:{file_id}'),
+                 ],
+                 [
+                  InlineKeyboardButton('◈ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ◈', url=f'https://t.me/Bot_Cracker') #Don't change anything without contacting me @LazyDeveloperr
+                 ]
+                ]
+             )
+        )
+        btn = [[
+            InlineKeyboardButton("! ɢᴇᴛ ꜰɪʟᴇ ᴀɢᴀɪɴ !", callback_data=f'delfile#{file_id}')
+        ]]
+        k = await client.send_message(chat_id = message.from_user.id, text=f"<b>❗️ <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> ❗️</b>\n\n<b>ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b>\n\n<b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b>")
+        await syd.delete()
+        await asyncio.sleep(600)
+        await msg.delete()
+        await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
+        await db.remove_stored_file_id(message.from_user.id)
+        return
+    else:
+        await query.answer("ɪ ᴀᴍ ᴀ ʙᴏᴛ, ᴊᴏɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ꜰɪʀꜱᴛ 🙄", show_alert=True)
+
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -194,12 +254,12 @@ async def start(client, message):
                     btn = [
                         [InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ⊛", url=invite_link)],
                         [InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ ↻",
-                            url=f"https://t.me/{temp.U_NAME}?start={data}")]
+                            callback_data=f"check_{channel_id}")]
                     ]
 
                     sydback = await client.send_message(
                         chat_id=user_id,
-                        text="<b>Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ...</b>",
+                        text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ Tʀʏ Aɢᴀɪɴ Tᴏ Gᴇᴛ Yᴏᴜʀ Rᴇǫᴜᴇꜱᴛᴇᴅ Fɪʟᴇ.",
                         reply_markup=InlineKeyboardMarkup(btn),
                         parse_mode=enums.ParseMode.HTML
                     )
@@ -232,7 +292,7 @@ async def start(client, message):
 
                     sydback = await client.send_message(
                         chat_id=user_id,
-                        text="<b>Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ </b>ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.\n\n<b>*ɴᴏᴛᴇ: ᴛʜɪꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ ɪꜱ ɴᴏᴛ ꜱᴇᴛ ʙʏ ᴛʜᴇ  ʙᴏᴛ ᴏᴡɴᴇʀ, ɪᴛ ɪꜱ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʀᴇꜱᴩᴇᴄᴛɪᴠᴇ  ɢʀᴏᴜᴩ ᴀᴅᴍɪɴ.</b>",
+                        text="<b>Jᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇꜱ ᴄʜᴀɴɴᴇʟ ᴀɴᴅ ᴛʜᴇɴ ᴄʟɪᴄᴋ ᴏɴ ᴛʀʏ ᴀɢᴀɪɴ </b>ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.\n\n<b><blockquote>ɴᴏᴛᴇ: ᴛʜɪꜱ ꜰᴏʀᴄᴇ ꜱᴜʙ ɪꜱ ɴᴏᴛ ꜱᴇᴛ ʙʏ ᴛʜᴇ  ʙᴏᴛ ᴏᴡɴᴇʀ, ɪᴛ ɪꜱ ꜱᴇᴛ ʙʏ ᴛʜᴇ ʀᴇꜱᴩᴇᴄᴛɪᴠᴇ  ɢʀᴏᴜᴩ ᴀᴅᴍɪɴ.</blockquote></b>",
                         reply_markup=InlineKeyboardMarkup(btn),
                         parse_mode=enums.ParseMode.HTML
                     )
@@ -341,7 +401,7 @@ async def start(client, message):
 
                 sydback = await client.send_message(
                     chat_id=message.from_user.id,
-                    text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ ᴛʀʏ ᴀɢᴀɪɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ʀᴇǫᴜᴇꜱᴛᴇᴅ ꜰɪʟᴇ.",
+                    text="Jᴏɪɴ Oᴜʀ Uᴘᴅᴀᴛᴇꜱ Cʜᴀɴɴᴇʟ ᴀɴᴅ Tʜᴇɴ Cʟɪᴄᴋ Oɴ Tʀʏ Aɢᴀɪɴ Tᴏ Gᴇᴛ Yᴏᴜʀ Rᴇǫᴜᴇꜱᴛᴇᴅ Fɪʟᴇ.",
                     reply_markup=InlineKeyboardMarkup(btn),
                     parse_mode=enums.ParseMode.MARKDOWN
                 )
