@@ -183,11 +183,11 @@ class Database:
         await self.all.delete_one({"_id": user_id})
 
     async def store_file_id_if_not_subscribed(self, user_id: int, file_id: str, mess: int):
-        exists = await self.all.find_one({"_id": user_id})
-        if exists:
-            await self.all.delete_one({"_id": user_id})
-        await self.all.insert_one({"_id": user_id, "file_id": file_id, "mess": mess})
-
+        await self.all.update_one(
+            {"_id": user_id},
+            {"$set": {"file_id": file_id, "mess": mess}},
+            upsert=True
+        )
     async def get_stored_file_id(self, user_id: int) -> dict | None:
         return await self.all.find_one({"_id": user_id})
         
