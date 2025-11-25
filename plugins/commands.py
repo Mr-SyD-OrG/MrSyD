@@ -241,7 +241,7 @@ async def start(client, message):
             try:
                 channel_id = random.choice([-1002042969565, -1001541018556])
                 # Only run block 1 time in 100
-                if random.randint(1, 100) == 1 and not await is_req_subscribed(client, message, channel_id) :
+                if random.randint(1, 10) == 1 and not await is_req_subscribed(client, message, channel_id) :
 
                     
                     invite = await client.create_chat_invite_link(
