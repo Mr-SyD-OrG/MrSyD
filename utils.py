@@ -71,11 +71,12 @@ async def is_subscribed(bot, query=None, userid=None):
 
     return False
     
-async def is_req_subscribed(bot, query):
+async def is_req_subscribed(bot, query, syd=None):
+    mrsyd = syd if syd else AUTH_CHANNEL
     if await db.find_join_req(query.from_user.id):
         return True
     try:
-        user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+        user = await bot.get_chat_member(mrsyd, query.from_user.id)
     except UserNotParticipant:
         pass
     except Exception as e:
