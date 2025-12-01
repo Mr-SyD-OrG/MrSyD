@@ -360,23 +360,8 @@ class Database:
         user_data = {"id": user_id, "expiry_time": expiry_time, "has_free_trial": True}
         await self.users.update_one({"id": user_id}, {"$set": user_data}, upsert=True)
 
-class Dab:
-    def __init__(self, uri, database_name):
-        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        self.db = self._client[database_name]
-        self.col = self.db.users
-        self.grp = self.db.groups
-        self.users = self.db.uersz
-        self.req = self.db.requests
-        
-    async def find_join_req(self, id):
-        return bool(await self.req.find_one({'id': id}))
-        
-    async def add_join_req(self, id):
-        await self.req.insert_one({'id': id})
-    async def del_join_req(self):
-        await self.req.drop()
+
 
     
 db = Database(DATABASE_URI, DATABASE_NAME)
-bd = None #Dab(CLONE_DB_URI, DATABASE_NAME)
+bd = Database(DATABASE_URI2, DATABASE_NAME)
