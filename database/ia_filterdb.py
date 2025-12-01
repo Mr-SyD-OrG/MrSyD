@@ -59,6 +59,17 @@ async def save_file(media, use_db=1):
     model = Media1 if use_db == 1 else Media2
     # TODO: Find better way to get same file_id for same media to avoid duplicates
     file_id, file_ref = unpack_new_file_id(media.file_id)
+    
+    exists_db1 = await Media1.find_one({"file_id": file_id})
+    if exists_db1:
+        logger.warning(f"File already exists in Media1 → Skipping save.")
+        return False, 0
+
+    exists_db2 = await Media2.find_one({"file_id": file_id})
+    if exists_db2:
+        logger.warning(f"File already exists in Media2 → Skipping save.")
+        return False, 0
+        
     file_name = re.sub(r"(_|\-|\.|\+)", " ", str(media.file_name))
     try:
         file = model(
