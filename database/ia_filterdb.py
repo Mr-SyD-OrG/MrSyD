@@ -14,16 +14,17 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-client = AsyncIOMotorClient(DATABASE_URI)
-db = client[DATABASE_NAME]
-instance = Instance.from_db(db)
+client1 = AsyncIOMotorClient(DATABASE_URI)
+db1 = client1[DATABASE_NAME]
+instance1 = Instance.from_db(db1)
 
-clieent = AsyncIOMotorClient(DATABASE_URI2)
-bd = clieent[DATABASE_NAME]
-sydtance = sydtance.from_db(bd)
+client2 = AsyncIOMotorClient(DATABASE_URI2)
+db2 = client2[DATABASE_NAME]
+instance2 = Instance.from_db(db2)
 
-@instance.register
-class Media(Document):
+
+@instance1.register
+class Media1(Document):
     file_id = fields.StrField(attribute='_id')
     file_ref = fields.StrField(allow_none=True)
     file_name = fields.StrField(required=True)
@@ -33,18 +34,33 @@ class Media(Document):
     caption = fields.StrField(allow_none=True)
 
     class Meta:
-        indexes = ('$file_name', )
+        indexes = ('$file_name',)
         collection_name = COLLECTION_NAME
 
 
-async def save_file(media):
-    """Save file in database"""
+@instance2.register
+class Media2(Document):
+    file_id = fields.StrField(attribute='_id')
+    file_ref = fields.StrField(allow_none=True)
+    file_name = fields.StrField(required=True)
+    file_size = fields.IntField(required=True)
+    file_type = fields.StrField(allow_none=True)
+    mime_type = fields.StrField(allow_none=True)
+    caption = fields.StrField(allow_none=True)
 
+    class Meta:
+        indexes = ('$file_name',)
+        collection_name = COLLECTION_NAME
+
+
+
+async def save_file(media, use_db=1):
+    model = Media1 if use_db == 1 else Media2
     # TODO: Find better way to get same file_id for same media to avoid duplicates
     file_id, file_ref = unpack_new_file_id(media.file_id)
     file_name = re.sub(r"(_|\-|\.|\+)", " ", str(media.file_name))
     try:
-        file = Media(
+        file = model(
             file_id=file_id,
             file_ref=file_ref,
             file_name=file_name,
