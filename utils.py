@@ -1,6 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION
+from info import AUTH_CHANNEL, FSUB_UNAME, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, IS_SHORTLINK, LOG_CHANNEL, TUTORIAL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION
 from imdb import Cinemagoer 
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
@@ -58,9 +58,9 @@ class temp(object):
 async def is_subscribed(bot, query=None, userid=None):
     try:
         if userid == None and query != None:
-            user = await bot.get_chat_member(SYD_CHANNEL, query.from_user.id)
+            user = await bot.get_chat_member(FSUB_UNAME, query.from_user.id)
         else:
-            user = await bot.get_chat_member(SYD_CHANNEL, int(userid))
+            user = await bot.get_chat_member(FSUB_UNAME, int(userid))
     except UserNotParticipant:
         pass
     except Exception as e:
@@ -70,13 +70,13 @@ async def is_subscribed(bot, query=None, userid=None):
             return True
 
     return False
-    
-async def is_req_subscribed(bot, query, syd=None):
-    mrsyd = syd if syd else AUTH_CHANNEL
-    if await db.find_join_req(query.from_user.id):
+
+
+async def is_req_subscribed(bot, query, syd=AUTH_CHANNEL):
+    if await db.find_join_req(query.from_user.id, syd):
         return True
     try:
-        user = await bot.get_chat_member(mrsyd, query.from_user.id)
+        user = await bot.get_chat_member(syd, query.from_user.id)
     except UserNotParticipant:
         pass
     except Exception as e:
