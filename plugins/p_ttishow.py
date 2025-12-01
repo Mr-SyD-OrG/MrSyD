@@ -3,12 +3,13 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong, PeerIdInvalid
 from info import ADMINS, LOG_CHANNEL, SUPPORT_CHAT, MELCOW_NEW_USERS, MELCOW_VID, CHNL_LNK, GRP_LNK
 from database.users_chats_db import db
-from database.ia_filterdb import Media
+from database.ia_filterdb import Media1
 from utils import get_size, temp, get_settings
 from Script import script
 from pyrogram.errors import ChatAdminRequired
 import asyncio 
 
+Media = Media1
 """-----------------------------------------https://t.me/Mr_Movies_File_bot--------------------------------------"""
 
 @Client.on_message(filters.new_chat_members & filters.group)
