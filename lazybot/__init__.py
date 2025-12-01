@@ -12,7 +12,7 @@ logging.getLogger("aiohttp").setLevel(logging.ERROR)
 logging.getLogger("aiohttp.web").setLevel(logging.ERROR)
 
 from pyrogram import Client
-from database.ia_filterdb import Media
+from database.ia_filterdb import Media1, Media2
 from info import *
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
