@@ -2,8 +2,8 @@ import re
 import logging
 from pyrogram import Client, filters
 from info import DELETE_CHANNELS
-from database.ia_filterdb import Media, unpack_new_file_id
-
+from database.ia_filterdb import Media1, unpack_new_file_id
+Media = Media1
 logger = logging.getLogger(__name__)
 
 media_filter = filters.document | filters.video | filters.audio
