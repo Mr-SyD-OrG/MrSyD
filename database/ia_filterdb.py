@@ -1,5 +1,6 @@
 import logging
 from struct import pack
+import asyncio
 import re
 import base64
 from pyrogram.file_id import FileId
@@ -313,6 +314,28 @@ async def get_search_results(client, chat_id, query, file_type=None, max_results
         if file_type:
             filter["file_type"] = file_type
 
+
+        async def search_db(model):
+            cursor = model.find(filter)
+            cursor.sort("$natural", -1).skip(offset).limit(max_results)
+            files = await cursor.to_list(length=max_results)
+            count = await model.count_documents(filter)
+            return files, count
+
+        (files1, count1), (files2, count2) = await asyncio.gather(
+            search_db(Media1),
+            search_db(Media2)
+        )
+
+        combined = files1 + files2
+        combined = combined[:max_results]
+
+        total_results = count1 + count2
+
+        next_offset = offset + max_results if (offset + max_results) < total_results else ""
+
+        return combined, next_offset, total_results
+        
     # get total matching results (can be slow for huge collection)
         total_results = await Media.count_documents(filter)
 
