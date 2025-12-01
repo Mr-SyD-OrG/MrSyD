@@ -12,7 +12,7 @@ from pyrogram.types import *
 from urllib.parse import quote_plus
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
 from database.users_chats_db import db, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
-from info import CHANNELS, ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, HOWTOVERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, PICS, SUBSCRIPTION, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, PREMIUM_AND_REFERAL_MODE
+from info import CHANNELS, ADMINS, AUTH_CHANNEL, SYD_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, HOWTOVERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, PICS, SUBSCRIPTION, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, PREMIUM_AND_REFERAL_MODE
 from utils import get_settings, get_size, is_req_subscribed, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_tutorial
 from database.connections_mdb import active_connection
 # from plugins.pm_filter import ENABLE_SHORTLINK
@@ -374,12 +374,18 @@ async def start(client, message):
     if AUTH_CHANNEL:
         try:
             # Fetch subscription statuses once
-            is_req_sub = await is_req_subscribed(client, message)
+            is_req_sub = await is_req_subscribed(client, message, AUTH_CHANNEL)
+            is_req_sub2 = await is_req_subscribed(client, message, SYD_CHANNEL)
             is_sub = await is_subscribed(client, message)
 
-            if not (is_req_sub and is_sub):
+            if not (is_req_sub and is_req_sub2 and is_sub):
                 try:
-                    invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL), creates_join_request=True)
+                    invite_link, invite_link2 = None, None
+                    if not is_req_sub:
+                        invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL), creates_join_request=True)
+                    if not is_req_sub2:
+                        invite_link2 = await client.create_chat_invite_link(int(SYD_CHANNEL), creates_join_request=True)
+                
                 except ChatAdminRequired:
                     logger.error("Make sure Bot is admin in Forcesub channel")
                     return
@@ -387,11 +393,14 @@ async def start(client, message):
                 btn = []
 
                 # Only add buttons if the user is not subscribed
-                if not is_req_sub:
+                if invite_link:
                     btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ¹⊛", url=invite_link.invite_link)])
 
+                if invite_link2:
+                    btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url=invite_link2.invite_link)])
+                    
                 if not is_sub:
-                    btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ²⊛", url="https://t.me/Bot_Cracker")])
+                    btn.append([InlineKeyboardButton("⊛ Jᴏɪɴ Uᴘᴅᴀᴛᴇꜱ CʜᴀɴɴᴇL ³⊛", url="https://t.me/Bot_Cracker")])
 
                 if len(message.command) > 1 and message.command[1] != "subscribe":
                     try:
