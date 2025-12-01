@@ -46,7 +46,7 @@ async def auto(bot, message):
                     
                 except Exception as e:
                     logger.exception("Failed to save file: %s", e)
-                    await message.reply("An error occurred while processing the file.")
+                    await message.reply(f"An error occurred while processing the file. {e}")
             else:
                 logger.warning("No media found in the message.")
         else:
