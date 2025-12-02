@@ -3,7 +3,7 @@
 import asyncio, re, ast, math, random, pytz
 from datetime import datetime, timedelta, date, time
 lock = asyncio.Lock()
-from database.users_chats_db import db
+from database.users_chats_db import db, bd
 from pyrogram.errors.exceptions.bad_request_400 import MediaEmpty, PhotoInvalidDimensions, WebpageMediaEmpty
 from Script import script
 from .join_req import force_db
@@ -2156,10 +2156,15 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
         total = await Media.count_documents()
+        total2 = await Media2.count_documents()
         users = await db.total_users_count()
         chats = await db.total_chat_count()
         monsize = await db.get_db_size()
+        monsize2 = await bd.get_db_size()
         free = 536870912 - monsize
+        free2 = 536870912 - monsize2
+        monsize2 = get_size(monsize2)
+        free2 = get_size(free2)
         monsize = get_size(monsize)
         free = get_size(free)
         await client.edit_message_media(
@@ -2168,7 +2173,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InputMediaPhoto(random.choice(PICS))
         )
         await query.message.edit_text(
-            text=script.STATUS_TXT.format(total, users, chats, monsize, free),
+            text=script.STATUS_TXT.format(total, total2, users, chats, monsize, free, monsize2, free2),
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
