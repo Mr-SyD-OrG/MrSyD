@@ -453,9 +453,9 @@ async def get_bad_files(query, file_type=None, filter=False):
     if file_type:
         filter['file_type'] = file_type
 
-    total_results = await Media.count_documents(filter)
+    total_results = await Media1.count_documents(filter)
 
-    cursor = Media.find(filter)
+    cursor = Media1.find(filter)
     # Sort by recent
     cursor.sort('$natural', -1)
     # Get list of files
