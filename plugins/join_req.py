@@ -1,6 +1,6 @@
 from pyrogram import Client, filters, enums
 from pyrogram.types import ChatJoinRequest, Message, InlineKeyboardMarkup, InlineKeyboardButton
-from database.users_chats_db import db
+from database.users_chats_db import bd as db
 from info import ADMINS, SYD_URI, SYD_NAME, SYD_CHANNEL, AUTH_CHANNEL
 from motor.motor_asyncio import AsyncIOMotorClient
 from pyrogram.enums import ChatMemberStatus
@@ -289,6 +289,57 @@ async def set_force_channel(client, message):
         
     
 
+@Client.on_message(filters.command("delreq") & filters.private & filters.user(ADMINS))
+async def del_requests(client, message):
+    await db.delete_all_join_req()    
+    await message.reply("<b>⚙ ꜱᴜᴄᴄᴇꜱꜱғᴜʟʟʏ ᴄʜᴀɴɴᴇʟ ʟᴇғᴛ ᴜꜱᴇʀꜱ ᴅᴇʟᴇᴛᴇᴅ</b>")
+
+
+@Client.on_callback_query(filters.regex("^jrq:") & filters.user(ADMINS))
+async def jreq_callback(client, cq):
+    action = cq.data.split(":")[1]
+
+    if action == "del_auth":
+        result = await db.delete_channel_users(AUTH_CHANNEL)
+        await cq.message.reply(f"🗑️ Deleted **{result.deleted_count}** users from AUTH_CHANNEL.")
+        return await cq.answer("Deleted!")
+
+    if action == "del_syd":
+        result = await db.delete_channel_users(SYD_CHANNEL)
+        await cq.message.reply(f"🗑️ Deleted **{result.deleted_count}** users from SYD_CHANNEL.")
+        return await cq.answer("Deleted!")
+
+    if action == "del_all":
+        await db.delete_all_join_req()
+        await cq.message.reply("🗑️ All join requests deleted.")
+        return await cq.answer("Cleared!")
+
+    if action == "count":
+        auth_count = await db.req.count_documents({"channel_id": AUTH_CHANNEL})
+        syd_count = await db.req.count_documents({"channel_id": SYD_CHANNEL})
+        total = await db.req.count_documents({})
+
+        await cq.message.reply(
+            f"📊 **Join Request Count:**\n"
+            f"• AUTH_CHANNEL: `{auth_count}`\n"
+            f"• SYD_CHANNEL : `{syd_count}`\n"
+            f"• Total       : `{total}`"
+        )
+        return await cq.answer("Loaded!")
+
+@Client.on_message(filters.command("jreq") & filters.user(ADMINS))
+async def jreq_menu(client, message):
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🗑️ Delete AUTH Channel", callback_data="jrq:del_auth")],
+        [InlineKeyboardButton("🗑️ Delete SYD Channel", callback_data="jrq:del_syd")],
+        [InlineKeyboardButton("🗑️ Delete ALL", callback_data="jrq:del_all")],
+        [InlineKeyboardButton("📊 View Count", callback_data="jrq:count")],
+    ])
+
+    await message.reply(
+        "**📂 Join-Request Manager**\nSelect an option:",
+        reply_markup=keyboard
+    )
     
 # Step 2: In a general handler
 @Client.on_message(filters.forwarded)
@@ -421,10 +472,6 @@ async def join_reqqs(client, message: ChatJoinRequest):
     await db.remove_stored_file_id(message.from_user.id)
     return
       
-@Client.on_message(filters.command("delreq") & filters.private & filters.user(ADMINS))
-async def del_requests(client, message):
-    await db.del_join_req()    
-    await message.reply("<b>⚙ ꜱᴜᴄᴄᴇꜱꜱғᴜʟʟʏ ᴄʜᴀɴɴᴇʟ ʟᴇғᴛ ᴜꜱᴇʀꜱ ᴅᴇʟᴇᴛᴇᴅ</b>")
 
 
 force_db = Database(SYD_URI, SYD_NAME)
