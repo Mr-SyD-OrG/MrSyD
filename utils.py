@@ -15,7 +15,7 @@ import os
 from datetime import datetime, date, timedelta
 import string
 from typing import List
-from database.users_chats_db import db
+from database.users_chats_db import db, bd
 from bs4 import BeautifulSoup
 import requests
 import aiohttp
@@ -73,7 +73,7 @@ async def is_subscribed(bot, query=None, userid=None):
 
 
 async def is_req_subscribed(bot, query, syd=AUTH_CHANNEL):
-    if await db.find_join_req(query.from_user.id, syd):
+    if await bd.find_join_req(query.from_user.id, syd):
         return True
     try:
         user = await bot.get_chat_member(syd, query.from_user.id)
