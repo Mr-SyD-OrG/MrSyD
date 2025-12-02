@@ -464,10 +464,14 @@ async def get_bad_files(query, file_type=None, filter=False):
     return files, total_results
 
 async def get_file_details(query):
-    filter = {'file_id': query}
-    cursor = Media.find(filter)
-    filedetails = await cursor.to_list(length=1)
-    return filedetails
+    filter = {"file_id": query}
+    file1 = await Media1.find_one(filter)
+    if file1:
+        return [file1]
+    file2 = await Media2.find_one(filter)
+    if file2:
+        return [file2]
+    return []
 
 
 def encode_file_id(s: bytes) -> str:
