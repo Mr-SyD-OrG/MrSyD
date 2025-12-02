@@ -70,7 +70,7 @@ async def Lazy_start():
     b_users, b_chats = await db.get_banned()
     temp.BANNED_USERS = b_users
     temp.BANNED_CHATS = b_chats
-    await Media1.ensure_indexes()
+   # await Media1.ensure_indexes()
     await Media2.ensure_indexes()
     me = await LazyPrincessBot.get_me()
     temp.ME = me.id
