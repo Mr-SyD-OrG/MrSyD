@@ -11,7 +11,7 @@ from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
 from urllib.parse import quote_plus
 from database.ia_filterdb import Media1, get_file_details, unpack_new_file_id, get_bad_files
-from database.users_chats_db import db, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
+from database.users_chats_db import db, bd, delete_all_referal_users, get_referal_users_count, get_referal_all_users, referal_add_user
 from info import CHANNELS, ADMINS, AUTH_CHANNEL, FSUB_UNAME, SYD_CHANNEL, LOG_CHANNEL, PICS, BATCH_FILE_CAPTION, CUSTOM_FILE_CAPTION, PROTECT_CONTENT, CHNL_LNK, GRP_LNK, REQST_CHANNEL, SUPPORT_CHAT_ID, SUPPORT_CHAT, MAX_B_TN, VERIFY, HOWTOVERIFY, SHORTLINK_API, SHORTLINK_URL, TUTORIAL, IS_TUTORIAL, PREMIUM_USER, PICS, SUBSCRIPTION, REFERAL_PREMEIUM_TIME, REFERAL_COUNT, PREMIUM_AND_REFERAL_MODE
 from utils import get_settings, get_size, is_req_subscribed, is_subscribed, save_group_settings, temp, verify_user, check_token, check_verification, get_token, get_shortlink, get_tutorial
 from database.connections_mdb import active_connection
@@ -81,7 +81,7 @@ async def check_channel(client, query):
         await asyncio.sleep(600)
         await msg.delete()
         await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
-        await db.remove_stored_file_id(user_id)
+        await bd.remove_stored_file_id(user_id)
         return
     else:
         await query.answer("ɪ ᴀᴍ ᴀ ʙᴏᴛ, ᴊᴏɪɴ ᴛʜᴇ ᴄʜᴀɴɴᴇʟ ꜰɪʀꜱᴛ 🙄", show_alert=True)
