@@ -152,7 +152,7 @@ class Database:
 
 
 @Client.on_chat_join_request(
-    ~filters.chat([AUTH_CHANNEL, SYD_CHANNEL])
+    ~filters.chat(AUTH_CHANNEL)
 )
 async def handle_join_request(client: Client, message: ChatJoinRequest):
     user_id = message.from_user.id
@@ -461,7 +461,7 @@ async def join_reqs(client, message: ChatJoinRequest):
     await db.remove_stored_file_id(message.from_user.id)
     return
 
-@Client.on_chat_join_request(filters.chat(SYD_CHANNEL))
+#@Client.on_chat_join_request(filters.chat(SYD_CHANNEL))
 async def join_reqqs(client, message: ChatJoinRequest):
   return
   if not await db.find_join_req(message.from_user.id, SYD_CHANNEL):
