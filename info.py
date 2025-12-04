@@ -22,6 +22,8 @@ API_ID = int(environ.get('API_ID', ''))
 API_HASH = environ.get('API_HASH', '')
 BOT_TOKEN = environ.get('BOT_TOKEN', "")
 FSUB_UNAME = "Mod_Moviez_X"
+COUNT_LIMIT = 12
+DAYS_LIMIT = 4  
 
 # Bot settings
 CACHE_TIME = int(environ.get('CACHE_TIME', 300))
