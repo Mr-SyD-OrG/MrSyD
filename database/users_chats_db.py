@@ -45,18 +45,49 @@ class Database:
         self.syd = self.db.bots
         self.words = self.db.words
         
-    
+
+
     async def find_join_req(self, user_id: int, channel_id: int):
         doc = await self.req.find_one({'user_id': user_id, 'channel_id': channel_id})
         return bool(doc)
 
-    async def add_join_req(self, user_id: int, channel_id: int):
+    async def update_count(self, user_id: int, new_count: int):
+        await self.req.update_one(
+            {"_id": user_id},
+            {"$set": {"count": new_count}}
+        )
+    
+    async def syd_user(self, user_id: int):
+        return await self.req.find_one({"_id": user_id})
+    
+
+    async def add_join_oreq(self, user_id: int, channel_id: int):
         await self.req.update_one(
             {'user_id': user_id, 'channel_id': channel_id},
             {'$set': {'user_id': user_id, 'channel_id': channel_id}},
             upsert=True
         )
 
+    async def add_join_req(self, user_id: int, channel_id: int):
+    # Add the channel ONLY if it's not already in the array
+        result = await self.req.update_one(
+            {"_id": user_id},
+            {
+                "$addToSet": {"channels": channel_id},
+                "$setOnInsert": {"time": int(time.time())},   # only on first user document creation
+            },
+            upsert=True
+        )
+
+        if result.modified_count == 1:
+            await self.req.update_one(
+                {"_id": user_id},
+                {"$set": {
+                    "time": int(time.time()),   # reset time
+                    "count": 0                  # reset count
+                }}
+            )
+            
     async def del_join_req(self, user_id: int, channel_id: int):
         await self.req.delete_one({'user_id': user_id, 'channel_id': channel_id})
 
@@ -66,7 +97,6 @@ class Database:
         
     async def del_all_join_req(self):
         await self.req.drop()
-
         
     def new_user(self, id, name):
         return dict(
