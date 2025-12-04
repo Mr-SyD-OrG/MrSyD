@@ -73,8 +73,8 @@ async def is_subscribed(bot, query=None, userid=None):
 
 
 async def is_req_subscribed(bot, query, syd=AUTH_CHANNEL):
-    if await bd.find_join_req(query.from_user.id, syd):
-        return True
+   # if await bd.find_join_req(query.from_user.id, syd):
+       # return True
     try:
         user = await bot.get_chat_member(syd, query.from_user.id)
     except UserNotParticipant:
@@ -86,6 +86,65 @@ async def is_req_subscribed(bot, query, syd=AUTH_CHANNEL):
             return True
 
     return False
+
+COUNT_LIMIT = 12
+DAYS_LIMIT = 4  # days
+
+
+async def get_authchannel(bot, query, auth_list):
+    user_id = query.from_user.id
+    doc = await bd.syd_user(user_id)  # expects {"_id": id, "channels": [...], "count": n, "time": ts} or None
+    now = int(time.time())
+
+    # Helper: return False + first/second auth channel when no DB channels exist
+    def no_db_response():
+        ch1 = auth_list[0] if len(auth_list) >= 1 else None
+        ch2 = auth_list[1] if len(auth_list) >= 2 else None
+        return False, ch1, ch2
+
+    # Helper: safe member check
+    async def _is_member(bot, ch_id, user_id):
+        try:
+            m = await bot.get_chat_member(int(ch_id), user_id)
+        except UserNotParticipant:
+            return False
+        except Exception:
+            # treat other errors as "not subscribed" to be safe for force-sub flow
+            return False
+        else:
+            return m.status != enums.ChatMemberStatus.BANNED
+
+    # If no DB doc -> prompt first one or two auth channels
+    if not doc:
+        return no_db_response()
+
+    channels = doc.get("channels", []) or []
+    count = doc.get("count", 0)
+    t = doc.get("time", 0)
+    
+    missing = [c for c in auth_list if c not in channels]
+    if not missing:
+        return True, None, None
+        
+    if len(channels) == 1:
+        stored = channels[0]
+        # stored channel is ok -> find first auth channel that's not in DB and prompt it
+        ch1 = missing[0] if len(missing) >= 1 else None
+        # second prompt not required in this case (keep as None)
+        return False, ch1, None
+        
+    if count < COUNT_LIMIT and (not t or (now - t) < DAYS_LIMIT * 86400):
+        await bd.update_count(user_id, count + 1)
+        print("with boundary")
+        return True, None, None
+
+    if len(channels) >= 2:
+        for ch in missing:
+            if not await _is_member(bot, ch, user_id):
+                print(f"with {ch}")
+                return False, ch, None
+        return True, None, None
+    return no_db_response()
 
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
