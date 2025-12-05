@@ -334,6 +334,10 @@ class Database:
     async def get_db_size(self):
         return (await self.db.command("dbstats"))['dataSize']
 
+    async def get_syd_size(self):
+        stats = await self.db.command("dbstats")
+        return stats.get("storageSize", 0)
+    
     async def get_user(self, user_id):
         user_data = await self.users.find_one({"id": user_id})
         return user_data
