@@ -167,9 +167,9 @@ async def get_ststs(bot, message):
     free = get_size(free)
     files2 = await Media2.count_documents()
     size2 = await bd.get_db_size()
-    free2 = 536870912 - size
-    size2 = get_size(size)
-    free2 = get_size(free)
+    free2 = 536870912 - size2
+    size2 = get_size(size2)
+    free2 = get_size(free2)
     syd = get_size(await bd.get_syd_size())
     syd2 = get_size(await db.get_syd_size())
     await message.reply(f'{syd} and {syd2}')
