@@ -145,19 +145,17 @@ async def get_authchannel(bot, query, auth_list):
     return no_db_response()
 
 async def extract_audio_subtitles_formatted(text: str) -> str:
-    cleaned = re.sub(r"[🔊📜]\s*(?=(Audio|Subtitles))", "", text, flags=re.IGNORECASE)
+    cleaned = re.sub(r"[🔊📜]", "", text)
     t = cleaned.replace("\n", " ").strip()
-    audio = None
-    m_audio = re.search(r"audio[:\- ]+(.*?)(?=subtitles|$)", t, re.IGNORECASE)
-    if m_audio:
-        audio = m_audio.group(1).strip().rstrip(",.; ")
-    subs = None
-    m_subs = re.search(r"subtitles[:\- ]+(.*?)(?=$)", t, re.IGNORECASE)
-    if m_subs:
-        subs = m_subs.group(1).strip().rstrip(",.; ")
+    audio_pattern = r"(?:Audio\s*[:\-]\s*)([A-Za-z0-9 ,/&]+)"
+    subs_pattern = r"\b(?:Subtitles?|Subs)\b\s*[:\-]\s*([A-Za-z0-9 ,/&]+)"
+    m_audio = re.search(audio_pattern, t, flags=re.IGNORECASE)
+    audio = m_audio.group(1).strip() if m_audio else None
+    m_subs = re.search(subs_pattern, t, flags=re.IGNORECASE)
+    subs = m_subs.group(1).strip() if m_subs else None
     parts = []
     if audio:
-        parts.append(f"\n🔊 Audio: <a href='https://t.me/Mod_Moviez_X'>{audio}</a>")
+        parts.append(f"🔊 Audio: <a href='https://t.me/Mod_Moviez_X'>{audio}</a>")
     if subs:
         parts.append(f"📜 Subtitles: <a href='https://t.me/Bot_Cracker'>{subs}</a>")
 
