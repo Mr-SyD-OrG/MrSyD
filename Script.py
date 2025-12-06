@@ -254,7 +254,7 @@ Mᴇꜱꜱᴀɢᴇ : <b>{}</b>"""
 """ 
    # PLEASE DO NOT REMOVE ANY CREDITS ❤️‍🩹
     
-    CAPTION = """ 📂 <b><i><a href="https://t.me/+Uqdj6CEYypVlNDA9">{file_name}</a>\n{sydaudcap}</i></b>\n"""
+    CAPTION = """ 📂 <b><i><a href="https://t.me/+Uqdj6CEYypVlNDA9">{file_name}</a>\n\n{sydaudcap}</i></b>\n"""
 
     IMDB_TEMPLATE_TXT = """
 <b>Hᴇʏ {message.from_user.mention}, ʜᴇʀᴇ ɪꜱ ᴛʜᴇ ʀᴇꜱᴜʟᴛꜱ ꜰᴏʀ ʏᴏᴜʀ ǫᴜᴇʀʏ {search}.
