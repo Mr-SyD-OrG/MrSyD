@@ -1,7 +1,9 @@
 from pyrogram import Client, filters, enums
 from pyrogram.types import ChatJoinRequest, Message, InlineKeyboardMarkup, InlineKeyboardButton
 from database.users_chats_db import bd as db
-from info import ADMINS, SYD_URI, SYD_NAME, SYD_CHANNEL, AUTH_CHANNEL
+from info import ADMINS, SYD_URI, SYD_NAME, SYD_CHANNEL, AUTH_CHANNEL, CUSTOM_FILE_CAPTION
+from utils import extract_audio_subtitles_formatted, get_size
+from database.ia_filterdb import get_file_details
 from motor.motor_asyncio import AsyncIOMotorClient
 from pyrogram.enums import ChatMemberStatus
 from pyrogram.errors import ChatAdminRequired, RPCError
@@ -184,9 +186,24 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
 
         file_id = data["file_id"]
         messyd = int(data["mess"])
-
-        # Try fetching old message
         try:
+            files_ = await get_file_details(file_id)
+            if files_:
+                files = files_[0]
+                title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.replace('_', ' ').split()))
+                size = get_size(files.file_size)
+                f_caption = f"<code>{title}</code>"
+                sydcp = await extract_audio_subtitles_formatted(files.caption)
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name=title or '',
+                            file_size=size or '',
+                            file_caption='',
+                            sydaudcap=sydcp if sydcp else ''
+                        )
+                    except:
+                        pass
             syd = await client.get_messages(chat_id=user_id, message_ids=messyd)
         except Exception:
             syd = None
@@ -195,6 +212,7 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
         msg = await client.send_cached_media(
             chat_id=message.from_user.id,
             file_id=file_id,
+            caption=f_caption,
             reply_markup=InlineKeyboardMarkup(
                 [
                  [
@@ -209,7 +227,7 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
         btn = [[
             InlineKeyboardButton("! ɢᴇᴛ ꜰɪʟᴇ ᴀɢᴀɪɴ !", callback_data=f'delfile#{file_id}')
         ]]
-        k = await client.send_message(chat_id = message.from_user.id, text=f"<b>❗️ <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> ❗️</b>\n\n<b>ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b>\n\n<b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b>")
+        k = await client.send_message(chat_id = message.from_user.id, text=f"<b>❗️ <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> ❗️</b>\n\n<b>ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b>\n<blockquote><b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b></blockquote>")
         try:
             await syd.delete()
         except:
@@ -217,7 +235,7 @@ async def handle_join_request(client: Client, message: ChatJoinRequest):
         await db.remove_stored_file_id(message.from_user.id)
         await asyncio.sleep(600)
         await msg.delete()
-        await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
+        await k.edit_text("<blockquote><b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b></blockquote>",reply_markup=InlineKeyboardMarkup(btn))
         return
 
 async def is_rq_subscribed(bot, query, group_id):
@@ -436,12 +454,30 @@ async def join_reqs(client, message: ChatJoinRequest):
     messyd = int(data["mess"])
      
     try:
+        files_ = await get_file_details(file_id)
+        if files_:
+            files = files_[0]
+            title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.replace('_', ' ').split()))
+            size = get_size(files.file_size)
+            f_caption = f"<code>{title}</code>"
+            sydcp = await extract_audio_subtitles_formatted(files.caption)
+            if CUSTOM_FILE_CAPTION:
+                try:
+                    f_caption = CUSTOM_FILE_CAPTION.format(
+                        file_name=title or '',
+                        file_size=size or '',
+                        file_caption='',
+                        sydaudcap=sydcp if sydcp else ''
+                    )
+                except:
+                    pass
         syd = await client.get_messages(chat_id=message.from_user.id, message_ids=messyd)
     except:
         syd = None
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,
+        caption=f_caption,
         reply_markup=InlineKeyboardMarkup(
             [
              [
@@ -456,7 +492,7 @@ async def join_reqs(client, message: ChatJoinRequest):
     btn = [[
         InlineKeyboardButton("! ɢᴇᴛ ꜰɪʟᴇ ᴀɢᴀɪɴ !", callback_data=f'delfile#{file_id}')
     ]]
-    k = await client.send_message(chat_id = message.from_user.id, text=f"<b>❗️ <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> ❗️</b>\n\n<b>ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b>\n\n<b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b>")
+    k = await client.send_message(chat_id = message.from_user.id, text=f"<b>❗️ <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> ❗️</b>\n\n<b>ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b>\n<blockquote><b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b></blockquote>")
     try:
         await syd.delete()
     except:
@@ -464,7 +500,7 @@ async def join_reqs(client, message: ChatJoinRequest):
     await db.remove_stored_file_id(message.from_user.id)
     await asyncio.sleep(600)
     await msg.delete()
-    await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
+    await k.edit_text("<blockquote><b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b></blockquote>",reply_markup=InlineKeyboardMarkup(btn))
     return
 
 #@Client.on_chat_join_request(filters.chat(SYD_CHANNEL))
