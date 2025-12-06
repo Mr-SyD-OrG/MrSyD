@@ -28,7 +28,6 @@ SYD = ["😶‍🌫️", "🥶", "🍀", "🌴", "🍀", "🕸", "❄️", "⛈�
 
 @Client.on_callback_query(filters.regex(r"check_(.+)"))
 async def check_channel(client, query):
-
     channel = query.matches[0].group(1)           # channel username/id from callback
     user_id = query.from_user.id
 
@@ -54,6 +53,23 @@ async def check_channel(client, query):
 
         # Try fetching old message
         try:
+            files_ = await get_file_details(file_id)
+            if files_:
+                files = files_[0]
+                title = '' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.replace('_', ' ').split()))
+                size = get_size(files.file_size)
+                f_caption = f"<code>{title}</code>"
+                sydcp = await extract_audio_subtitles_formatted(files.caption)
+                if CUSTOM_FILE_CAPTION:
+                    try:
+                        f_caption = CUSTOM_FILE_CAPTION.format(
+                            file_name=title or '',
+                            file_size=size or '',
+                            file_caption='',
+                            sydaudcap=sydcp if sydcp else ''
+                        )
+                    except:
+                        pass
             syd = await client.get_messages(chat_id=user_id, message_ids=messyd)
         except Exception:
             syd = None
@@ -62,6 +78,7 @@ async def check_channel(client, query):
         msg = await client.send_cached_media(
             chat_id=user_id,
             file_id=file_id,
+            caption=f_caption,
             reply_markup=InlineKeyboardMarkup(
                 [
                  [
@@ -76,11 +93,11 @@ async def check_channel(client, query):
         btn = [[
             InlineKeyboardButton("! ɢᴇᴛ ꜰɪʟᴇ ᴀɢᴀɪɴ !", callback_data=f'delfile#{file_id}')
         ]]
-        k = await client.send_message(chat_id = user_id, text=f"<b>❗️ <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> ❗️</b>\n\n<b>ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b>\n\n<b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b>")
+        k = await client.send_message(chat_id = user_id, text=f"<b>❗️ <u>ɪᴍᴘᴏʀᴛᴀɴᴛ</u> ❗️</b>\n\n<b>ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴡɪʟʟ ʙᴇ ᴅᴇʟᴇᴛᴇᴅ ɪɴ</b> <b><u>10 ᴍɪɴᴜᴛᴇꜱ</u> </b><b>(ᴅᴜᴇ ᴛᴏ ᴄᴏᴘʏʀɪɢʜᴛ ɪꜱꜱᴜᴇꜱ).</b><blockquote>\n<b><i>📌 ᴘʟᴇᴀꜱᴇ ꜰᴏʀᴡᴀʀᴅ ᴛʜɪꜱ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ᴛᴏ ꜱᴏᴍᴇᴡʜᴇʀᴇ ᴇʟꜱᴇ ᴀɴᴅ ꜱᴛᴀʀᴛ ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ ᴛʜᴇʀᴇ.</i></b></blockquote>")
         await syd.delete()
         await asyncio.sleep(600)
         await msg.delete()
-        await k.edit_text("<b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b>",reply_markup=InlineKeyboardMarkup(btn))
+        await k.edit_text("<blockquote><b>ʏᴏᴜʀ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ ɪꜱ ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ !!\n\nᴄʟɪᴄᴋ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ʏᴏᴜʀ ᴅᴇʟᴇᴛᴇᴅ ᴠɪᴅᴇᴏ / ꜰɪʟᴇ 👇</b></blockquote>",reply_markup=InlineKeyboardMarkup(btn))
         await bd.remove_stored_file_id(user_id)
         return
     else:
